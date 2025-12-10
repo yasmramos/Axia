@@ -1,0 +1,98 @@
+package com.axia.service;
+
+import com.axia.config.DatabaseConfig;
+import com.axia.model.FiscalYear;
+import com.axia.repository.FiscalYearRepository;
+import io.ebean.Database;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+public class FiscalYearService {
+
+    private final FiscalYearRepository fiscalYearRepository;
+    private final Database db;
+
+    public FiscalYearService() {
+        this.fiscalYearRepository = new FiscalYearRepository();
+        this.db = DatabaseConfig.getDatabase();
+    }
+
+    public FiscalYear create(Integer year, LocalDate startDate, LocalDate endDate) {
+        if (fiscalYearRepository.findByYear(year).isPresent()) {
+            throw new IllegalArgumentException("Ya existe un año fiscal: " + year);
+        }
+
+        FiscalYear fiscalYear = new FiscalYear();
+        fiscalYear.setYear(year);
+        fiscalYear.setStartDate(startDate);
+        fiscalYear.setEndDate(endDate);
+        fiscalYear.setClosed(false);
+        fiscalYear.setCurrent(false);
+
+        fiscalYearRepository.save(fiscalYear);
+        return fiscalYear;
+    }
+
+    public FiscalYear setCurrent(Long id) {
+        FiscalYear fiscalYear = fiscalYearRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Año fiscal no encontrado"));
+
+        // Desmarcar el año fiscal actual
+        fiscalYearRepository.findCurrent().ifPresent(current -> {
+            current.setCurrent(false);
+            fiscalYearRepository.update(current);
+        });
+
+        fiscalYear.setCurrent(true);
+        fiscalYearRepository.update(fiscalYear);
+
+        return fiscalYear;
+    }
+
+    public FiscalYear close(Long id) {
+        FiscalYear fiscalYear = fiscalYearRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Año fiscal no encontrado"));
+
+        if (fiscalYear.isClosed()) {
+            throw new IllegalStateException("El año fiscal ya está cerrado");
+        }
+
+        fiscalYear.setClosed(true);
+        fiscalYear.setCurrent(false);
+        fiscalYearRepository.update(fiscalYear);
+
+        return fiscalYear;
+    }
+
+    public Optional<FiscalYear> findById(Long id) {
+        return fiscalYearRepository.findById(id);
+    }
+
+    public Optional<FiscalYear> findByYear(Integer year) {
+        return fiscalYearRepository.findByYear(year);
+    }
+
+    public Optional<FiscalYear> findCurrent() {
+        return fiscalYearRepository.findCurrent();
+    }
+
+    public List<FiscalYear> findAll() {
+        return fiscalYearRepository.findAll();
+    }
+
+    public List<FiscalYear> findOpen() {
+        return fiscalYearRepository.findOpen();
+    }
+
+    public void initializeCurrentYear() {
+        int currentYear = LocalDate.now().getYear();
+        if (fiscalYearRepository.findByYear(currentYear).isEmpty()) {
+            FiscalYear fy = create(currentYear,
+                    LocalDate.of(currentYear, 1, 1),
+                    LocalDate.of(currentYear, 12, 31));
+            setCurrent(fy.getId());
+        }
+    }
+}

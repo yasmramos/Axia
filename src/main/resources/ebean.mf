@@ -1,0 +1,3 @@
+entity-packages: com.axia.model
+transactional-packages: com.axia.service
+querybean-packages: com.axia.model
