@@ -184,4 +184,4 @@ MIT License
 
 ## Author
 
-Yasmin Ramos ([@yasmramos](https://github.com/yasmramos))
+Yasmany Ramos García ([@yasmramos](https://github.com/yasmramos))
