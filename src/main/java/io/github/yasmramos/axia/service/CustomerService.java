@@ -2,6 +2,8 @@ package io.github.yasmramos.axia.service;
 
 import io.github.yasmramos.axia.model.Customer;
 import io.github.yasmramos.axia.repository.CustomerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +16,8 @@ import java.util.Optional;
  */
 public class CustomerService {
 
+    private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
+
     private final CustomerRepository customerRepository;
 
     public CustomerService() {
@@ -23,7 +27,8 @@ public class CustomerService {
     public Customer create(String code, String name, String taxId, String address,
                            String city, String phone, String email) {
         if (customerRepository.findByCode(code).isPresent()) {
-            throw new IllegalArgumentException("Ya existe un cliente con el código: " + code);
+            log.error("Customer already exists with code: {}", code);
+            throw new IllegalArgumentException("Customer already exists with code: " + code);
         }
 
         Customer customer = new Customer();

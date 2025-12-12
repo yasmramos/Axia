@@ -3,6 +3,8 @@ package io.github.yasmramos.axia;
 import io.github.yasmramos.axia.config.DatabaseConfig;
 import io.github.yasmramos.axia.service.AccountService;
 import io.github.yasmramos.axia.service.FiscalYearService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Axia Accounting System - Main Application Entry Point.
@@ -30,6 +32,8 @@ import io.github.yasmramos.axia.service.FiscalYearService;
  */
 public class AxiaApplication {
 
+    private static final Logger log = LoggerFactory.getLogger(AxiaApplication.class);
+
     /**
      * Initializes the accounting system.
      * 
@@ -41,6 +45,8 @@ public class AxiaApplication {
      * </ul>
      */
     public static void initialize() {
+        log.info("Initializing Axia Accounting System");
+        
         // Initialize database connection
         DatabaseConfig.getDatabase();
 
@@ -50,6 +56,8 @@ public class AxiaApplication {
 
         FiscalYearService fiscalYearService = new FiscalYearService();
         fiscalYearService.initializeCurrentYear();
+        
+        log.info("Axia Accounting System initialized successfully");
     }
 
     /**
@@ -59,6 +67,7 @@ public class AxiaApplication {
      * Should be called when the application terminates.
      */
     public static void shutdown() {
+        log.info("Shutting down Axia Accounting System");
         DatabaseConfig.shutdown();
     }
 
@@ -68,15 +77,13 @@ public class AxiaApplication {
      * @param args command line arguments (not used)
      */
     public static void main(String[] args) {
-        System.out.println("Initializing Axia Accounting System...");
+        log.info("Starting Axia Accounting System...");
         
         try {
             initialize();
-            System.out.println("System initialized successfully.");
-            System.out.println("Chart of accounts and fiscal year created.");
+            log.info("System ready");
         } catch (Exception e) {
-            System.err.println("Initialization error: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Initialization error: {}", e.getMessage(), e);
         } finally {
             shutdown();
         }

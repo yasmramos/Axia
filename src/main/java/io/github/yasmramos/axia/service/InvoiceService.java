@@ -6,6 +6,8 @@ import io.github.yasmramos.axia.repository.AccountRepository;
 import io.github.yasmramos.axia.repository.InvoiceRepository;
 import io.ebean.Database;
 import io.ebean.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,6 +25,8 @@ import java.util.Optional;
  */
 public class InvoiceService {
 
+    private static final Logger log = LoggerFactory.getLogger(InvoiceService.class);
+
     private final InvoiceRepository invoiceRepository;
     private final AccountRepository accountRepository;
     private final JournalEntryService journalEntryService;
@@ -33,9 +37,12 @@ public class InvoiceService {
         this.accountRepository = new AccountRepository();
         this.journalEntryService = new JournalEntryService();
         this.db = DatabaseConfig.getDatabase();
+        log.debug("InvoiceService initialized");
     }
 
     public Invoice createSaleInvoice(Customer customer, LocalDate date, LocalDate dueDate) {
+        log.info("Creating sales invoice for customer: {}", customer.getName());
+        
         Invoice invoice = new Invoice();
         invoice.setInvoiceNumber(invoiceRepository.getNextInvoiceNumber(InvoiceType.SALE, date.getYear()));
         invoice.setType(InvoiceType.SALE);
@@ -45,10 +52,13 @@ public class InvoiceService {
         invoice.setCustomer(customer);
 
         invoiceRepository.save(invoice);
+        log.info("Sales invoice created: {}", invoice.getInvoiceNumber());
         return invoice;
     }
 
     public Invoice createPurchaseInvoice(Supplier supplier, LocalDate date, LocalDate dueDate) {
+        log.info("Creating purchase invoice for supplier: {}", supplier.getName());
+        
         Invoice invoice = new Invoice();
         invoice.setInvoiceNumber(invoiceRepository.getNextInvoiceNumber(InvoiceType.PURCHASE, date.getYear()));
         invoice.setType(InvoiceType.PURCHASE);
@@ -58,13 +68,17 @@ public class InvoiceService {
         invoice.setSupplier(supplier);
 
         invoiceRepository.save(invoice);
+        log.info("Purchase invoice created: {}", invoice.getInvoiceNumber());
         return invoice;
     }
 
     public Invoice addLine(Invoice invoice, String description, BigDecimal quantity,
                            BigDecimal unitPrice, BigDecimal taxRate, Account account) {
+        log.debug("Adding line to invoice {}: {}", invoice.getInvoiceNumber(), description);
+        
         if (invoice.getStatus() != InvoiceStatus.DRAFT) {
-            throw new IllegalStateException("Solo se pueden modificar facturas en borrador");
+            log.error("Cannot modify non-draft invoice: {}", invoice.getInvoiceNumber());
+            throw new IllegalStateException("Can only modify draft invoices");
         }
 
         InvoiceLine line = new InvoiceLine();
@@ -76,26 +90,36 @@ public class InvoiceService {
 
         invoice.addLine(line);
         invoiceRepository.update(invoice);
+        log.debug("Line added. Invoice total: {}", invoice.getTotal());
 
         return invoice;
     }
 
     public Invoice post(Long invoiceId) {
+        log.info("Posting invoice ID: {}", invoiceId);
+        
         Invoice invoice = invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
+                .orElseThrow(() -> {
+                    log.error("Invoice not found: {}", invoiceId);
+                    return new IllegalArgumentException("Invoice not found");
+                });
 
         if (invoice.getStatus() != InvoiceStatus.DRAFT) {
-            throw new IllegalStateException("Solo se pueden contabilizar facturas en borrador");
+            log.error("Cannot post non-draft invoice: {}", invoice.getInvoiceNumber());
+            throw new IllegalStateException("Can only post draft invoices");
         }
 
         if (invoice.getLines().isEmpty()) {
-            throw new IllegalStateException("La factura no tiene líneas");
+            log.error("Invoice {} has no lines", invoice.getInvoiceNumber());
+            throw new IllegalStateException("Invoice has no lines");
         }
 
         try (Transaction txn = db.beginTransaction()) {
+            log.debug("Creating journal entry for invoice {}", invoice.getInvoiceNumber());
+            
             JournalEntry entry = journalEntryService.create(
                     invoice.getDate(),
-                    "Factura " + invoice.getInvoiceNumber(),
+                    "Invoice " + invoice.getInvoiceNumber(),
                     invoice.getInvoiceNumber()
             );
 
@@ -112,19 +136,26 @@ public class InvoiceService {
             invoiceRepository.update(invoice);
 
             txn.commit();
+            log.info("Invoice {} posted successfully with journal entry #{}", 
+                    invoice.getInvoiceNumber(), entry.getEntryNumber());
         }
 
         return invoice;
     }
 
     private void createSaleJournalEntry(Invoice invoice, JournalEntry entry) {
-        // Débito: Cuentas por Cobrar
-        Account cxc = accountRepository.findByCode("1.1.03")
-                .orElseThrow(() -> new IllegalStateException("Cuenta 'Cuentas por Cobrar' no encontrada"));
-        journalEntryService.addLine(entry, cxc, invoice.getTotal(), null,
-                "Factura " + invoice.getInvoiceNumber());
+        log.debug("Creating sales journal entry for invoice {}", invoice.getInvoiceNumber());
+        
+        // Debit: Accounts Receivable
+        Account accountsReceivable = accountRepository.findByCode("1.1.03")
+                .orElseThrow(() -> {
+                    log.error("Accounts Receivable account not found");
+                    return new IllegalStateException("Accounts Receivable account not found");
+                });
+        journalEntryService.addLine(entry, accountsReceivable, invoice.getTotal(), null,
+                "Invoice " + invoice.getInvoiceNumber());
 
-        // Crédito: Ingresos por cada línea
+        // Credit: Revenue for each line
         for (InvoiceLine line : invoice.getLines()) {
             Account incomeAccount = line.getAccount() != null ? line.getAccount() :
                     accountRepository.findByCode("4.1.01").orElse(null);
@@ -134,17 +165,22 @@ public class InvoiceService {
             }
         }
 
-        // Crédito: Impuestos por Pagar
+        // Credit: Taxes Payable
         if (invoice.getTaxAmount().compareTo(BigDecimal.ZERO) > 0) {
             Account taxAccount = accountRepository.findByCode("2.1.02")
-                    .orElseThrow(() -> new IllegalStateException("Cuenta 'Impuestos por Pagar' no encontrada"));
+                    .orElseThrow(() -> {
+                        log.error("Taxes Payable account not found");
+                        return new IllegalStateException("Taxes Payable account not found");
+                    });
             journalEntryService.addLine(entry, taxAccount, null, invoice.getTaxAmount(),
-                    "IVA Factura " + invoice.getInvoiceNumber());
+                    "Tax Invoice " + invoice.getInvoiceNumber());
         }
     }
 
     private void createPurchaseJournalEntry(Invoice invoice, JournalEntry entry) {
-        // Débito: Gastos por cada línea
+        log.debug("Creating purchase journal entry for invoice {}", invoice.getInvoiceNumber());
+        
+        // Debit: Expenses for each line
         for (InvoiceLine line : invoice.getLines()) {
             Account expenseAccount = line.getAccount() != null ? line.getAccount() :
                     accountRepository.findByCode("5.1.02").orElse(null);
@@ -154,74 +190,100 @@ public class InvoiceService {
             }
         }
 
-        // Débito: IVA por recuperar (simplificado como reducción de impuestos por pagar)
+        // Debit: Input Tax (simplified as reduction of taxes payable)
         if (invoice.getTaxAmount().compareTo(BigDecimal.ZERO) > 0) {
             Account taxAccount = accountRepository.findByCode("2.1.02")
-                    .orElseThrow(() -> new IllegalStateException("Cuenta 'Impuestos por Pagar' no encontrada"));
+                    .orElseThrow(() -> {
+                        log.error("Taxes Payable account not found");
+                        return new IllegalStateException("Taxes Payable account not found");
+                    });
             journalEntryService.addLine(entry, taxAccount, invoice.getTaxAmount(), null,
-                    "IVA Factura " + invoice.getInvoiceNumber());
+                    "Tax Invoice " + invoice.getInvoiceNumber());
         }
 
-        // Crédito: Cuentas por Pagar
-        Account cxp = accountRepository.findByCode("2.1.01")
-                .orElseThrow(() -> new IllegalStateException("Cuenta 'Cuentas por Pagar' no encontrada"));
-        journalEntryService.addLine(entry, cxp, null, invoice.getTotal(),
-                "Factura " + invoice.getInvoiceNumber());
+        // Credit: Accounts Payable
+        Account accountsPayable = accountRepository.findByCode("2.1.01")
+                .orElseThrow(() -> {
+                    log.error("Accounts Payable account not found");
+                    return new IllegalStateException("Accounts Payable account not found");
+                });
+        journalEntryService.addLine(entry, accountsPayable, null, invoice.getTotal(),
+                "Invoice " + invoice.getInvoiceNumber());
     }
 
     public Invoice cancel(Long invoiceId) {
+        log.info("Cancelling invoice ID: {}", invoiceId);
+        
         Invoice invoice = invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
+                .orElseThrow(() -> {
+                    log.error("Invoice not found: {}", invoiceId);
+                    return new IllegalArgumentException("Invoice not found");
+                });
 
         if (invoice.getStatus() == InvoiceStatus.CANCELLED) {
-            throw new IllegalStateException("La factura ya está anulada");
+            log.error("Invoice {} is already cancelled", invoice.getInvoiceNumber());
+            throw new IllegalStateException("Invoice is already cancelled");
         }
 
         if (invoice.getStatus() == InvoiceStatus.POSTED && invoice.getJournalEntry() != null) {
+            log.debug("Reversing journal entry for invoice {}", invoice.getInvoiceNumber());
             journalEntryService.reverse(
                     invoice.getJournalEntry().getId(),
                     LocalDate.now(),
-                    "Anulación de factura " + invoice.getInvoiceNumber()
+                    "Cancellation of invoice " + invoice.getInvoiceNumber()
             );
         }
 
         invoice.setStatus(InvoiceStatus.CANCELLED);
         invoiceRepository.update(invoice);
+        log.info("Invoice {} cancelled", invoice.getInvoiceNumber());
 
         return invoice;
     }
 
     public Invoice markAsPaid(Long invoiceId) {
+        log.info("Marking invoice as paid, ID: {}", invoiceId);
+        
         Invoice invoice = invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
+                .orElseThrow(() -> {
+                    log.error("Invoice not found: {}", invoiceId);
+                    return new IllegalArgumentException("Invoice not found");
+                });
 
         if (invoice.getStatus() != InvoiceStatus.POSTED) {
-            throw new IllegalStateException("Solo se pueden marcar como pagadas facturas contabilizadas");
+            log.error("Cannot mark non-posted invoice as paid: {}", invoice.getInvoiceNumber());
+            throw new IllegalStateException("Can only mark posted invoices as paid");
         }
 
         invoice.setStatus(InvoiceStatus.PAID);
         invoiceRepository.update(invoice);
+        log.info("Invoice {} marked as paid", invoice.getInvoiceNumber());
 
         return invoice;
     }
 
     public Optional<Invoice> findById(Long id) {
+        log.debug("Finding invoice by ID: {}", id);
         return invoiceRepository.findById(id);
     }
 
     public List<Invoice> findAll() {
+        log.debug("Retrieving all invoices");
         return invoiceRepository.findAll();
     }
 
     public List<Invoice> findByType(InvoiceType type) {
+        log.debug("Finding invoices by type: {}", type);
         return invoiceRepository.findByType(type);
     }
 
     public List<Invoice> findByDateRange(LocalDate startDate, LocalDate endDate) {
+        log.debug("Finding invoices by date range: {} to {}", startDate, endDate);
         return invoiceRepository.findByDateRange(startDate, endDate);
     }
 
     public List<Invoice> findByStatus(InvoiceStatus status) {
+        log.debug("Finding invoices by status: {}", status);
         return invoiceRepository.findByStatus(status);
     }
 }

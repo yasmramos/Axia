@@ -4,6 +4,8 @@ import io.github.yasmramos.axia.config.DatabaseConfig;
 import io.github.yasmramos.axia.model.FiscalYear;
 import io.github.yasmramos.axia.repository.FiscalYearRepository;
 import io.ebean.Database;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.Optional;
  * @version 1.0.0
  */
 public class FiscalYearService {
+
+    private static final Logger log = LoggerFactory.getLogger(FiscalYearService.class);
 
     private final FiscalYearRepository fiscalYearRepository;
     private final Database db;

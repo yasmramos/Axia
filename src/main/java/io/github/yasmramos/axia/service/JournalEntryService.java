@@ -8,6 +8,8 @@ import io.github.yasmramos.axia.repository.AccountRepository;
 import io.github.yasmramos.axia.repository.JournalEntryRepository;
 import io.ebean.Database;
 import io.ebean.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,6 +27,8 @@ import java.util.Optional;
  */
 public class JournalEntryService {
 
+    private static final Logger log = LoggerFactory.getLogger(JournalEntryService.class);
+
     private final JournalEntryRepository journalEntryRepository;
     private final AccountRepository accountRepository;
     private final Database db;
@@ -33,9 +37,12 @@ public class JournalEntryService {
         this.journalEntryRepository = new JournalEntryRepository();
         this.accountRepository = new AccountRepository();
         this.db = DatabaseConfig.getDatabase();
+        log.debug("JournalEntryService initialized");
     }
 
     public JournalEntry create(LocalDate date, String description, String reference) {
+        log.info("Creating journal entry: {} - {}", date, description);
+        
         JournalEntry entry = new JournalEntry();
         entry.setEntryNumber(journalEntryRepository.getNextEntryNumber());
         entry.setDate(date);
@@ -44,12 +51,17 @@ public class JournalEntryService {
         entry.setPosted(false);
 
         journalEntryRepository.save(entry);
+        log.info("Journal entry created: #{}", entry.getEntryNumber());
         return entry;
     }
 
     public JournalEntry addLine(JournalEntry entry, Account account, BigDecimal debit, BigDecimal credit, String description) {
+        log.debug("Adding line to entry #{}: account={}, debit={}, credit={}", 
+                entry.getEntryNumber(), account.getCode(), debit, credit);
+        
         if (entry.isPosted()) {
-            throw new IllegalStateException("No se pueden agregar líneas a un asiento contabilizado");
+            log.error("Cannot add lines to posted entry #{}", entry.getEntryNumber());
+            throw new IllegalStateException("Cannot add lines to a posted journal entry");
         }
 
         JournalEntryLine line = new JournalEntryLine();
@@ -65,82 +77,114 @@ public class JournalEntryService {
     }
 
     public JournalEntry post(Long entryId) {
+        log.info("Posting journal entry ID: {}", entryId);
+        
         JournalEntry entry = journalEntryRepository.findById(entryId)
-                .orElseThrow(() -> new IllegalArgumentException("Asiento no encontrado"));
+                .orElseThrow(() -> {
+                    log.error("Journal entry not found: {}", entryId);
+                    return new IllegalArgumentException("Journal entry not found");
+                });
 
         if (entry.isPosted()) {
-            throw new IllegalStateException("El asiento ya está contabilizado");
+            log.error("Entry #{} is already posted", entry.getEntryNumber());
+            throw new IllegalStateException("Journal entry is already posted");
         }
 
         if (!entry.isBalanced()) {
-            throw new IllegalStateException("El asiento no está cuadrado. Débito: " +
-                    entry.getTotalDebit() + ", Crédito: " + entry.getTotalCredit());
+            log.error("Entry #{} is not balanced. Debit: {}, Credit: {}", 
+                    entry.getEntryNumber(), entry.getTotalDebit(), entry.getTotalCredit());
+            throw new IllegalStateException("Journal entry is not balanced. Debit: " +
+                    entry.getTotalDebit() + ", Credit: " + entry.getTotalCredit());
         }
 
         if (entry.getLines().isEmpty()) {
-            throw new IllegalStateException("El asiento no tiene líneas");
+            log.error("Entry #{} has no lines", entry.getEntryNumber());
+            throw new IllegalStateException("Journal entry has no lines");
         }
 
         try (Transaction txn = db.beginTransaction()) {
+            log.debug("Updating account balances for entry #{}", entry.getEntryNumber());
+            
             for (JournalEntryLine line : entry.getLines()) {
                 Account account = line.getAccount();
                 account.debit(line.getDebit());
                 account.credit(line.getCredit());
                 accountRepository.update(account);
+                log.trace("Updated account {}: debit={}, credit={}", 
+                        account.getCode(), line.getDebit(), line.getCredit());
             }
 
             entry.setPosted(true);
             journalEntryRepository.update(entry);
 
             txn.commit();
+            log.info("Journal entry #{} posted successfully", entry.getEntryNumber());
         }
 
         return entry;
     }
 
     public void reverse(Long entryId, LocalDate reversalDate, String description) {
+        log.info("Reversing journal entry ID: {}", entryId);
+        
         JournalEntry original = journalEntryRepository.findById(entryId)
-                .orElseThrow(() -> new IllegalArgumentException("Asiento no encontrado"));
+                .orElseThrow(() -> {
+                    log.error("Journal entry not found: {}", entryId);
+                    return new IllegalArgumentException("Journal entry not found");
+                });
 
         if (!original.isPosted()) {
-            throw new IllegalStateException("Solo se pueden reversar asientos contabilizados");
+            log.error("Cannot reverse unposted entry #{}", original.getEntryNumber());
+            throw new IllegalStateException("Only posted entries can be reversed");
         }
 
         JournalEntry reversal = create(reversalDate, description != null ? description :
-                "Reversión de asiento #" + original.getEntryNumber(), "REV-" + original.getEntryNumber());
+                "Reversal of entry #" + original.getEntryNumber(), "REV-" + original.getEntryNumber());
 
         for (JournalEntryLine line : original.getLines()) {
             addLine(reversal, line.getAccount(), line.getCredit(), line.getDebit(),
-                    "Reversión: " + line.getDescription());
+                    "Reversal: " + line.getDescription());
         }
 
         post(reversal.getId());
+        log.info("Entry #{} reversed with new entry #{}", original.getEntryNumber(), reversal.getEntryNumber());
     }
 
     public Optional<JournalEntry> findById(Long id) {
+        log.debug("Finding journal entry by ID: {}", id);
         return journalEntryRepository.findById(id);
     }
 
     public List<JournalEntry> findAll() {
+        log.debug("Retrieving all journal entries");
         return journalEntryRepository.findAll();
     }
 
     public List<JournalEntry> findByDateRange(LocalDate startDate, LocalDate endDate) {
+        log.debug("Finding entries by date range: {} to {}", startDate, endDate);
         return journalEntryRepository.findByDateRange(startDate, endDate);
     }
 
     public List<JournalEntryLine> getLedger(Account account, LocalDate startDate, LocalDate endDate) {
+        log.debug("Getting ledger for account {} from {} to {}", account.getCode(), startDate, endDate);
         return journalEntryRepository.findLinesByAccount(account, startDate, endDate);
     }
 
     public void delete(Long id) {
+        log.info("Deleting journal entry ID: {}", id);
+        
         JournalEntry entry = journalEntryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Asiento no encontrado"));
+                .orElseThrow(() -> {
+                    log.error("Journal entry not found: {}", id);
+                    return new IllegalArgumentException("Journal entry not found");
+                });
 
         if (entry.isPosted()) {
-            throw new IllegalStateException("No se puede eliminar un asiento contabilizado");
+            log.error("Cannot delete posted entry #{}", entry.getEntryNumber());
+            throw new IllegalStateException("Cannot delete a posted journal entry");
         }
 
         journalEntryRepository.delete(entry);
+        log.info("Journal entry #{} deleted", entry.getEntryNumber());
     }
 }

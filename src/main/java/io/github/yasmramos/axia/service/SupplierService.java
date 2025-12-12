@@ -2,6 +2,8 @@ package io.github.yasmramos.axia.service;
 
 import io.github.yasmramos.axia.model.Supplier;
 import io.github.yasmramos.axia.repository.SupplierRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +15,8 @@ import java.util.Optional;
  * @version 1.0.0
  */
 public class SupplierService {
+
+    private static final Logger log = LoggerFactory.getLogger(SupplierService.class);
 
     private final SupplierRepository supplierRepository;
 

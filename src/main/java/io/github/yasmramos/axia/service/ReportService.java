@@ -3,6 +3,8 @@ package io.github.yasmramos.axia.service;
 import io.github.yasmramos.axia.model.*;
 import io.github.yasmramos.axia.repository.AccountRepository;
 import io.github.yasmramos.axia.repository.JournalEntryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,6 +26,8 @@ import java.util.*;
  * @version 1.0.0
  */
 public class ReportService {
+
+    private static final Logger log = LoggerFactory.getLogger(ReportService.class);
 
     private final AccountRepository accountRepository;
     private final JournalEntryRepository journalEntryRepository;

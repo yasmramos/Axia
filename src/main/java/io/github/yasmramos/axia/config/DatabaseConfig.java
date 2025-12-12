@@ -3,6 +3,8 @@ package io.github.yasmramos.axia.config;
 import io.ebean.Database;
 import io.ebean.DatabaseFactory;
 import io.ebean.config.DatabaseConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Database configuration and connection management.
@@ -21,6 +23,8 @@ import io.ebean.config.DatabaseConfig;
  * @version 1.0.0
  */
 public class DatabaseConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
 
     /** Singleton database instance */
     private static Database database;
@@ -45,6 +49,7 @@ public class DatabaseConfig {
             config.setRegister(true);
 
             database = DatabaseFactory.create(config);
+            log.info("Database connection established");
         }
         return database;
     }
@@ -59,6 +64,7 @@ public class DatabaseConfig {
         if (database != null) {
             database.shutdown();
             database = null;
+            log.info("Database connection closed");
         }
     }
 }
