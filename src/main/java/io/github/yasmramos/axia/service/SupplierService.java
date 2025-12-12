@@ -6,6 +6,12 @@ import io.github.yasmramos.axia.repository.SupplierRepository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service layer for Supplier business operations.
+ *
+ * @author Yasmany Ramos García
+ * @version 1.0.0
+ */
 public class SupplierService {
 
     private final SupplierRepository supplierRepository;

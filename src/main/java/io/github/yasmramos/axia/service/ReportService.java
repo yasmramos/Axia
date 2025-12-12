@@ -8,6 +8,21 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * Service layer for financial report generation.
+ *
+ * <p>Generates standard accounting reports including:
+ * <ul>
+ *   <li>Balance Sheet</li>
+ *   <li>Income Statement</li>
+ *   <li>Trial Balance</li>
+ *   <li>General Ledger</li>
+ *   <li>Journal Book</li>
+ * </ul>
+ *
+ * @author Yasmany Ramos García
+ * @version 1.0.0
+ */
 public class ReportService {
 
     private final AccountRepository accountRepository;

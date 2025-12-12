@@ -6,6 +6,12 @@ import io.github.yasmramos.axia.repository.CustomerRepository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service layer for Customer business operations.
+ *
+ * @author Yasmany Ramos García
+ * @version 1.0.0
+ */
 public class CustomerService {
 
     private final CustomerRepository customerRepository;

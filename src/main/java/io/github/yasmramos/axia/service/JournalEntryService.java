@@ -14,6 +14,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service layer for JournalEntry business operations.
+ *
+ * <p>Manages journal entry lifecycle including creation,
+ * posting, and reversal with proper account balance updates.
+ *
+ * @author Yasmany Ramos García
+ * @version 1.0.0
+ */
 public class JournalEntryService {
 
     private final JournalEntryRepository journalEntryRepository;

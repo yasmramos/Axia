@@ -9,6 +9,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service layer for FiscalYear business operations.
+ *
+ * <p>Manages fiscal year lifecycle including creation,
+ * setting the current year, and period closing.
+ *
+ * @author Yasmany Ramos García
+ * @version 1.0.0
+ */
 public class FiscalYearService {
 
     private final FiscalYearRepository fiscalYearRepository;

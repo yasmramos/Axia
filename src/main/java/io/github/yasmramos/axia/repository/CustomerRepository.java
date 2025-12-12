@@ -7,6 +7,12 @@ import io.ebean.Database;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository for Customer entity persistence operations.
+ *
+ * @author Yasmany Ramos García
+ * @version 1.0.0
+ */
 public class CustomerRepository {
 
     private final Database db;

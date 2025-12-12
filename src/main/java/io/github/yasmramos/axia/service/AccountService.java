@@ -8,6 +8,15 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service layer for Account business operations.
+ *
+ * <p>Provides account management including creation, updates,
+ * and initialization of the default chart of accounts.
+ *
+ * @author Yasmany Ramos García
+ * @version 1.0.0
+ */
 public class AccountService {
 
     private final AccountRepository accountRepository;

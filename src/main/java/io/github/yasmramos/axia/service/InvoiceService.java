@@ -12,6 +12,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service layer for Invoice business operations.
+ *
+ * <p>Manages invoice lifecycle including creation, posting
+ * with automatic journal entry generation, and cancellation.
+ *
+ * @author Yasmany Ramos García
+ * @version 1.0.0
+ */
 public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
