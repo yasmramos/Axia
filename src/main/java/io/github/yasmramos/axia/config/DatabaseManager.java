@@ -2,7 +2,7 @@ package io.github.yasmramos.axia.config;
 
 import io.ebean.Database;
 import io.ebean.DatabaseFactory;
-import io.ebean.config.DatabaseConfig;
+import io.ebean.config.DatabaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public class DatabaseManager {
      */
     public static synchronized Database getDatabase() {
         if (database == null) {
-            io.ebean.config.DatabaseConfig config = new io.ebean.config.DatabaseConfig();
+            io.ebean.config.DatabaseManager config = new io.ebean.config.DatabaseManager();
             config.setName("db");
             config.loadFromProperties();
             config.setDefaultServer(true);

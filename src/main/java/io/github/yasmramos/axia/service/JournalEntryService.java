@@ -1,6 +1,6 @@
 package io.github.yasmramos.axia.service;
 
-import io.github.yasmramos.axia.config.DatabaseConfig;
+import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.model.Account;
 import io.github.yasmramos.axia.model.JournalEntry;
 import io.github.yasmramos.axia.model.JournalEntryLine;
@@ -36,7 +36,7 @@ public class JournalEntryService {
     public JournalEntryService() {
         this.journalEntryRepository = new JournalEntryRepository();
         this.accountRepository = new AccountRepository();
-        this.db = DatabaseConfig.getDatabase();
+        this.db = DatabaseManager.getDatabase();
         log.debug("JournalEntryService initialized");
     }
 

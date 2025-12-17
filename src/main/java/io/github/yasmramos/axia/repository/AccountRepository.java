@@ -1,6 +1,6 @@
 package io.github.yasmramos.axia.repository;
 
-import io.github.yasmramos.axia.config.DatabaseConfig;
+import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.model.Account;
 import io.github.yasmramos.axia.model.AccountType;
 import io.ebean.Database;
@@ -25,7 +25,7 @@ public class AccountRepository {
      * Creates a new AccountRepository instance.
      */
     public AccountRepository() {
-        this.db = DatabaseConfig.getDatabase();
+        this.db = DatabaseManager.getDatabase();
     }
 
     /**

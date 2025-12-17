@@ -1,6 +1,6 @@
 package io.github.yasmramos.axia.service;
 
-import io.github.yasmramos.axia.config.DatabaseConfig;
+import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.model.FiscalYear;
 import io.github.yasmramos.axia.repository.FiscalYearRepository;
 import io.ebean.Database;
@@ -29,7 +29,7 @@ public class FiscalYearService {
 
     public FiscalYearService() {
         this.fiscalYearRepository = new FiscalYearRepository();
-        this.db = DatabaseConfig.getDatabase();
+        this.db = DatabaseManager.getDatabase();
     }
 
     public FiscalYear create(Integer year, LocalDate startDate, LocalDate endDate) {

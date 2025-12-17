@@ -1,6 +1,6 @@
 package io.github.yasmramos.axia.repository;
 
-import io.github.yasmramos.axia.config.DatabaseConfig;
+import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.model.Customer;
 import io.ebean.Database;
 
@@ -18,7 +18,7 @@ public class CustomerRepository {
     private final Database db;
 
     public CustomerRepository() {
-        this.db = DatabaseConfig.getDatabase();
+        this.db = DatabaseManager.getDatabase();
     }
 
     public void save(Customer customer) {

@@ -1,6 +1,6 @@
 package io.github.yasmramos.axia;
 
-import io.github.yasmramos.axia.config.DatabaseConfig;
+import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.service.AccountService;
 import io.github.yasmramos.axia.service.FiscalYearService;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public class AxiaApplication {
         log.info("Initializing Axia Accounting System");
         
         // Initialize database connection
-        DatabaseConfig.getDatabase();
+        DatabaseManager.getDatabase();
 
         // Initialize default data
         AccountService accountService = new AccountService();
@@ -68,7 +68,7 @@ public class AxiaApplication {
      */
     public static void shutdown() {
         log.info("Shutting down Axia Accounting System");
-        DatabaseConfig.shutdown();
+        DatabaseManager.shutdown();
     }
 
     /**

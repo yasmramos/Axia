@@ -1,6 +1,6 @@
 package io.github.yasmramos.axia.repository;
 
-import io.github.yasmramos.axia.config.DatabaseConfig;
+import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.model.FiscalYear;
 import io.ebean.Database;
 
@@ -18,7 +18,7 @@ public class FiscalYearRepository {
     private final Database db;
 
     public FiscalYearRepository() {
-        this.db = DatabaseConfig.getDatabase();
+        this.db = DatabaseManager.getDatabase();
     }
 
     public void save(FiscalYear fiscalYear) {
