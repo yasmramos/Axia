@@ -91,7 +91,7 @@ public class DashboardService {
         logger.debug("Getting account balances by type");
         Map<String, BigDecimal> balances = new HashMap<>();
 
-        for (Account.AccountType type : Account.AccountType.values()) {
+        for (AccountType type : AccountType.values()) {
             BigDecimal total = calculateTotalBalanceByType(type);
             balances.put(type.name(), total);
         }
@@ -235,7 +235,7 @@ public class DashboardService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private BigDecimal calculateTotalBalanceByType(Account.AccountType type) {
+    private BigDecimal calculateTotalBalanceByType(AccountType type) {
         List<Account> accounts = DB.find(Account.class)
                 .where()
                 .eq("type", type)
