@@ -1,16 +1,12 @@
 package io.github.yasmramos.axia.validation;
 
-import io.github.yasmramos.axia.model.FiscalYear;
 import io.github.yasmramos.axia.model.JournalEntry;
-import io.github.yasmramos.axia.service.FiscalYearService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Validates accounting business rules.
@@ -22,12 +18,6 @@ public class AccountingValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountingValidator.class);
 
-    private final FiscalYearService fiscalYearService;
-
-    public AccountingValidator(FiscalYearService fiscalYearService) {
-        this.fiscalYearService = fiscalYearService;
-    }
-
     /**
      * Validates that a journal entry has balanced debits and credits.
      *
@@ -38,40 +28,15 @@ public class AccountingValidator {
         logger.debug("Validating balance for journal entry: {}", entry.getId());
         List<String> errors = new ArrayList<>();
 
-        BigDecimal debit = entry.getDebitAmount() != null ? entry.getDebitAmount() : BigDecimal.ZERO;
-        BigDecimal credit = entry.getCreditAmount() != null ? entry.getCreditAmount() : BigDecimal.ZERO;
+        BigDecimal totalDebit = entry.getTotalDebit();
+        BigDecimal totalCredit = entry.getTotalCredit();
 
-        if (debit.compareTo(BigDecimal.ZERO) == 0 && credit.compareTo(BigDecimal.ZERO) == 0) {
-            errors.add("Entry must have either a debit or credit amount");
+        if (totalDebit.compareTo(BigDecimal.ZERO) == 0 && totalCredit.compareTo(BigDecimal.ZERO) == 0) {
+            errors.add("Entry must have at least one line with debit or credit");
         }
 
-        if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
-            errors.add("Entry cannot have both debit and credit amounts");
-        }
-
-        if (debit.compareTo(BigDecimal.ZERO) < 0 || credit.compareTo(BigDecimal.ZERO) < 0) {
-            errors.add("Amounts cannot be negative");
-        }
-
-        return new ValidationResult(errors.isEmpty(), errors);
-    }
-
-    /**
-     * Validates that a date falls within an open fiscal year.
-     *
-     * @param date the date to validate
-     * @return validation result with any errors
-     */
-    public ValidationResult validateDateInOpenPeriod(LocalDate date) {
-        logger.debug("Validating date in open period: {}", date);
-        List<String> errors = new ArrayList<>();
-
-        Optional<FiscalYear> fiscalYear = fiscalYearService.findByDate(date);
-
-        if (fiscalYear.isEmpty()) {
-            errors.add("No fiscal year found for date: " + date);
-        } else if (fiscalYear.get().isClosed()) {
-            errors.add("Fiscal year is closed for date: " + date);
+        if (totalDebit.compareTo(totalCredit) != 0) {
+            errors.add("Entry is not balanced: Debit=" + totalDebit + ", Credit=" + totalCredit);
         }
 
         return new ValidationResult(errors.isEmpty(), errors);

@@ -71,7 +71,7 @@ public class DashboardService {
         logger.debug("Getting invoice counts by status");
         Map<String, Long> statusCounts = new HashMap<>();
 
-        for (Invoice.InvoiceStatus status : Invoice.InvoiceStatus.values()) {
+        for (InvoiceStatus status : InvoiceStatus.values()) {
             long count = DB.find(Invoice.class)
                     .where()
                     .eq("status", status)
@@ -170,7 +170,7 @@ public class DashboardService {
     private long countPendingInvoices() {
         return DB.find(Invoice.class)
                 .where()
-                .eq("status", Invoice.InvoiceStatus.PENDING)
+                .eq("status", InvoiceStatus.PENDING)
                 .findCount();
     }
 
@@ -184,7 +184,7 @@ public class DashboardService {
                 .isNotNull("customer")
                 .ge("invoiceDate", startDate)
                 .le("invoiceDate", endDate)
-                .eq("status", Invoice.InvoiceStatus.PAID)
+                .eq("status", InvoiceStatus.PAID)
                 .findList();
 
         return invoices.stream()
@@ -198,7 +198,7 @@ public class DashboardService {
                 .isNotNull("supplier")
                 .ge("invoiceDate", startDate)
                 .le("invoiceDate", endDate)
-                .eq("status", Invoice.InvoiceStatus.PAID)
+                .eq("status", InvoiceStatus.PAID)
                 .findList();
 
         return invoices.stream()
@@ -215,7 +215,7 @@ public class DashboardService {
         List<Invoice> invoices = DB.find(Invoice.class)
                 .where()
                 .isNotNull("customer")
-                .eq("status", Invoice.InvoiceStatus.PENDING)
+                .eq("status", InvoiceStatus.PENDING)
                 .findList();
 
         return invoices.stream()
@@ -227,7 +227,7 @@ public class DashboardService {
         List<Invoice> invoices = DB.find(Invoice.class)
                 .where()
                 .isNotNull("supplier")
-                .eq("status", Invoice.InvoiceStatus.PENDING)
+                .eq("status", InvoiceStatus.PENDING)
                 .findList();
 
         return invoices.stream()

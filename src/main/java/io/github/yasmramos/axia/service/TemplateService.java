@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +20,12 @@ import java.util.Optional;
 public class TemplateService {
 
     private static final Logger logger = LoggerFactory.getLogger(TemplateService.class);
+
+    private final JournalEntryService journalEntryService;
+
+    public TemplateService(JournalEntryService journalEntryService) {
+        this.journalEntryService = journalEntryService;
+    }
 
     /**
      * Saves or updates a template.
@@ -73,17 +78,17 @@ public class TemplateService {
     }
 
     /**
-     * Creates journal entries from a template.
+     * Creates a journal entry from a template.
      *
      * @param templateId the template ID
-     * @param entryDate the date for the entries
+     * @param entryDate the date for the entry
      * @param amount the amount (overrides default if provided)
      * @param description optional description override
-     * @return list of created journal entries
+     * @return created journal entry
      */
-    public List<JournalEntry> createFromTemplate(Long templateId, LocalDate entryDate, 
-                                                  BigDecimal amount, String description) {
-        logger.info("Creating entries from template {} for date {}", templateId, entryDate);
+    public JournalEntry createFromTemplate(Long templateId, LocalDate entryDate, 
+                                            BigDecimal amount, String description) {
+        logger.info("Creating entry from template {} for date {}", templateId, entryDate);
 
         Optional<JournalEntryTemplate> template = findById(templateId);
         if (template.isEmpty()) {
@@ -93,38 +98,21 @@ public class TemplateService {
         JournalEntryTemplate t = template.get();
         BigDecimal entryAmount = amount != null ? amount : t.getDefaultAmount();
         String entryDescription = description != null ? description : t.getDescription();
+        String reference = "TPL-" + templateId;
 
-        List<JournalEntry> entries = new ArrayList<>();
+        // Create journal entry with lines
+        JournalEntry entry = journalEntryService.create(entryDate, entryDescription, reference);
 
-        // Create debit entry
+        // Add debit and credit lines
         if (t.getDebitAccount() != null) {
-            JournalEntry debitEntry = new JournalEntry();
-            debitEntry.setAccount(t.getDebitAccount());
-            debitEntry.setEntryDate(entryDate);
-            debitEntry.setDebitAmount(entryAmount);
-            debitEntry.setDescription(entryDescription);
-            debitEntry.setReference("TPL-" + templateId);
-            entries.add(debitEntry);
+            journalEntryService.addLine(entry, t.getDebitAccount(), entryAmount, BigDecimal.ZERO, null);
         }
-
-        // Create credit entry
         if (t.getCreditAccount() != null) {
-            JournalEntry creditEntry = new JournalEntry();
-            creditEntry.setAccount(t.getCreditAccount());
-            creditEntry.setEntryDate(entryDate);
-            creditEntry.setCreditAmount(entryAmount);
-            creditEntry.setDescription(entryDescription);
-            creditEntry.setReference("TPL-" + templateId);
-            entries.add(creditEntry);
+            journalEntryService.addLine(entry, t.getCreditAccount(), BigDecimal.ZERO, entryAmount, null);
         }
 
-        // Save entries
-        for (JournalEntry entry : entries) {
-            DB.save(entry);
-        }
-
-        logger.info("Created {} entries from template", entries.size());
-        return entries;
+        logger.info("Created entry {} from template", entry.getId());
+        return entry;
     }
 
     /**
@@ -135,7 +123,7 @@ public class TemplateService {
      */
     public boolean delete(Long id) {
         logger.info("Deleting template: {}", id);
-        return DB.delete(JournalEntryTemplate.class, id);
+        return DB.delete(JournalEntryTemplate.class, id) > 0;
     }
 
     /**

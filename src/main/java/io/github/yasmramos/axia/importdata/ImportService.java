@@ -6,9 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +17,6 @@ import java.util.List;
 public class ImportService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImportService.class);
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final AccountService accountService;
     private final CustomerService customerService;
@@ -34,6 +30,7 @@ public class ImportService {
 
     /**
      * Imports accounts from a CSV file.
+     * Expected format: Code,Name,Type,ParentCode,Active
      *
      * @param filePath path to the CSV file
      * @return import result with counts and errors
@@ -54,13 +51,11 @@ public class ImportService {
                 try {
                     String[] parts = parseCsvLine(line);
                     if (parts.length >= 3) {
-                        Account account = new Account();
-                        account.setCode(parts[0].trim());
-                        account.setName(parts[1].trim());
-                        account.setType(Account.AccountType.valueOf(parts[2].trim().toUpperCase()));
-                        account.setActive(parts.length < 5 || Boolean.parseBoolean(parts[4].trim()));
-
-                        accountService.save(account);
+                        String code = parts[0].trim();
+                        String name = parts[1].trim();
+                        AccountType type = AccountType.valueOf(parts[2].trim().toUpperCase());
+                        
+                        accountService.create(code, name, type, null);
                         successCount++;
                     }
                 } catch (Exception e) {
@@ -76,6 +71,7 @@ public class ImportService {
 
     /**
      * Imports customers from a CSV file.
+     * Expected format: Code,Name,TaxId,Address,Email,Phone
      *
      * @param filePath path to the CSV file
      * @return import result with counts and errors
@@ -95,16 +91,15 @@ public class ImportService {
                 lineNumber++;
                 try {
                     String[] parts = parseCsvLine(line);
-                    if (parts.length >= 1) {
-                        Customer customer = new Customer();
-                        customer.setName(parts[0].trim());
-                        if (parts.length > 1) customer.setTaxId(parts[1].trim());
-                        if (parts.length > 2) customer.setEmail(parts[2].trim());
-                        if (parts.length > 3) customer.setPhone(parts[3].trim());
-                        if (parts.length > 4) customer.setAddress(parts[4].trim());
-                        customer.setActive(parts.length < 6 || Boolean.parseBoolean(parts[5].trim()));
+                    if (parts.length >= 2) {
+                        String code = parts[0].trim();
+                        String name = parts[1].trim();
+                        String taxId = parts.length > 2 ? parts[2].trim() : null;
+                        String address = parts.length > 3 ? parts[3].trim() : null;
+                        String email = parts.length > 4 ? parts[4].trim() : null;
+                        String phone = parts.length > 5 ? parts[5].trim() : null;
 
-                        customerService.save(customer);
+                        customerService.create(code, name, taxId, address, email, phone);
                         successCount++;
                     }
                 } catch (Exception e) {
@@ -120,6 +115,7 @@ public class ImportService {
 
     /**
      * Imports suppliers from a CSV file.
+     * Expected format: Code,Name,TaxId,Address,Email,Phone
      *
      * @param filePath path to the CSV file
      * @return import result with counts and errors
@@ -139,16 +135,15 @@ public class ImportService {
                 lineNumber++;
                 try {
                     String[] parts = parseCsvLine(line);
-                    if (parts.length >= 1) {
-                        Supplier supplier = new Supplier();
-                        supplier.setName(parts[0].trim());
-                        if (parts.length > 1) supplier.setTaxId(parts[1].trim());
-                        if (parts.length > 2) supplier.setEmail(parts[2].trim());
-                        if (parts.length > 3) supplier.setPhone(parts[3].trim());
-                        if (parts.length > 4) supplier.setAddress(parts[4].trim());
-                        supplier.setActive(parts.length < 6 || Boolean.parseBoolean(parts[5].trim()));
+                    if (parts.length >= 2) {
+                        String code = parts[0].trim();
+                        String name = parts[1].trim();
+                        String taxId = parts.length > 2 ? parts[2].trim() : null;
+                        String address = parts.length > 3 ? parts[3].trim() : null;
+                        String email = parts.length > 4 ? parts[4].trim() : null;
+                        String phone = parts.length > 5 ? parts[5].trim() : null;
 
-                        supplierService.save(supplier);
+                        supplierService.create(code, name, taxId, address, email, phone);
                         successCount++;
                     }
                 } catch (Exception e) {

@@ -58,15 +58,15 @@ public class ExportService {
         logger.info("Exporting {} journal entries to CSV: {}", entries.size(), outputPath);
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(outputPath))) {
-            writer.println("Date,Account Code,Description,Debit,Credit,Reference");
+            writer.println("Entry Number,Date,Description,Total Debit,Total Credit,Reference");
 
             for (JournalEntry entry : entries) {
                 writer.printf("%s,%s,\"%s\",%s,%s,%s%n",
-                        entry.getEntryDate().format(DATE_FORMAT),
-                        entry.getAccount() != null ? entry.getAccount().getCode() : "",
+                        entry.getEntryNumber(),
+                        entry.getDate().format(DATE_FORMAT),
                         escapeCsv(entry.getDescription()),
-                        formatAmount(entry.getDebitAmount()),
-                        formatAmount(entry.getCreditAmount()),
+                        formatAmount(entry.getTotalDebit()),
+                        formatAmount(entry.getTotalCredit()),
                         entry.getReference() != null ? entry.getReference() : "");
             }
         }
@@ -144,13 +144,13 @@ public class ExportService {
             for (Invoice invoice : invoices) {
                 writer.printf("%s,%s,%s,\"%s\",\"%s\",%s,%s,%s,%s%n",
                         invoice.getInvoiceNumber(),
-                        invoice.getInvoiceDate().format(DATE_FORMAT),
+                        invoice.getDate().format(DATE_FORMAT),
                         invoice.getDueDate() != null ? invoice.getDueDate().format(DATE_FORMAT) : "",
                         invoice.getCustomer() != null ? escapeCsv(invoice.getCustomer().getName()) : "",
                         invoice.getSupplier() != null ? escapeCsv(invoice.getSupplier().getName()) : "",
                         formatAmount(invoice.getSubtotal()),
                         formatAmount(invoice.getTaxAmount()),
-                        formatAmount(invoice.getTotalAmount()),
+                        formatAmount(invoice.getTotal()),
                         invoice.getStatus());
             }
         }
