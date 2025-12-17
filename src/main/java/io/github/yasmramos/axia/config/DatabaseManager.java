@@ -14,23 +14,23 @@ import org.slf4j.LoggerFactory;
  * 
  * <p>Usage:
  * <pre>
- * Database db = DatabaseConfig.getDatabase();
+ * Database db = DatabaseManager.getDatabase();
  * // ... perform operations
- * DatabaseConfig.shutdown(); // when done
+ * DatabaseManager.shutdown(); // when done
  * </pre>
  * 
  * @author Yasmany Ramos García
  * @version 1.0.0
  */
-public class DatabaseConfig {
+public class DatabaseManager {
 
-    private static final Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(DatabaseManager.class);
 
     /** Singleton database instance */
     private static Database database;
 
     /** Private constructor to prevent instantiation */
-    private DatabaseConfig() {}
+    private DatabaseManager() {}
 
     /**
      * Gets the singleton database instance.
