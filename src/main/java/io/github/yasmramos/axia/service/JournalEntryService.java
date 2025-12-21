@@ -38,8 +38,11 @@ public class JournalEntryService {
     private final Database db;
 
     @Inject
-    public JournalEntryService(JournalEntryRepository journalEntryRepository) {
+    public JournalEntryService(JournalEntryRepository journalEntryRepository, 
+                               AccountRepository accountRepository) {
         this.journalEntryRepository = journalEntryRepository;
+        this.accountRepository = accountRepository;
+        this.db = DatabaseManager.getDatabase();
     }
 
     public JournalEntry create(LocalDate date, String description, String reference) {
