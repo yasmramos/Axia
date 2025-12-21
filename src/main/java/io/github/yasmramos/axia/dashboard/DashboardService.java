@@ -188,7 +188,7 @@ public class DashboardService {
                 .findList();
 
         return invoices.stream()
-                .map(Invoice::getTotalAmount)
+                .map(Invoice::getTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -202,7 +202,7 @@ public class DashboardService {
                 .findList();
 
         return invoices.stream()
-                .map(Invoice::getTotalAmount)
+                .map(Invoice::getTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -219,7 +219,7 @@ public class DashboardService {
                 .findList();
 
         return invoices.stream()
-                .map(Invoice::getTotalAmount)
+                .map(Invoice::getTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -231,7 +231,7 @@ public class DashboardService {
                 .findList();
 
         return invoices.stream()
-                .map(Invoice::getTotalAmount)
+                .map(Invoice::getTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -261,7 +261,7 @@ public class DashboardService {
                 .findList();
 
         return invoices.stream()
-                .map(Invoice::getTotalAmount)
+                .map(Invoice::getTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

@@ -52,7 +52,7 @@ public class InvoiceService {
         invoice.setCustomer(customer);
         invoice.setSupplier(supplier);
         invoice.setSubtotal(subtotal);
-        invoice.setTax(tax);
+        invoice.setTaxAmount(tax);
         invoiceRepository.save(invoice);
         log.info("Invoice created: {}", number);
         return invoice;
