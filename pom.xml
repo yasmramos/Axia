@@ -123,20 +123,6 @@
 
     <build>
         <plugins>
-            <!-- Veld DI Plugin -->
-            <plugin>
-                <groupId>io.github.yasmramos</groupId>
-                <artifactId>veld-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            
             <!-- Ebean Enhancement -->
             <plugin>
                 <groupId>io.ebean</groupId>
@@ -151,6 +137,20 @@
                         </configuration>
                         <goals>
                             <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Veld DI Plugin -->
+            <plugin>
+                <groupId>io.github.yasmramos</groupId>
+                <artifactId>veld-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
                         </goals>
                     </execution>
                 </executions>
