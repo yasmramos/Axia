@@ -159,7 +159,7 @@ public class InvoiceService {
                 createPurchaseJournalEntry(invoice, entry);
             }
 
-            journalEntryService.post(entry.getId());
+            entry = journalEntryService.post(entry.getId());
 
             invoice.setJournalEntry(entry);
             invoice.setStatus(InvoiceStatus.POSTED);
