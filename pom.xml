@@ -175,6 +175,18 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.ebean</groupId>
+                            <artifactId>querybean-generator</artifactId>
+                            <version>${ebean.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.github.yasmramos</groupId>
+                            <artifactId>veld-processor</artifactId>
+                            <version>1.0.0</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
