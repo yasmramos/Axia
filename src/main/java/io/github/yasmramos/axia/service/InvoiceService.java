@@ -40,6 +40,36 @@ public class InvoiceService {
         log.debug("InvoiceService initialized");
     }
 
+    public Invoice create(String number, InvoiceType type, LocalDate date, LocalDate dueDate,
+                          Customer customer, Supplier supplier, BigDecimal subtotal, BigDecimal tax) {
+        log.info("Creating invoice: {}", number);
+        Invoice invoice = new Invoice();
+        invoice.setInvoiceNumber(number);
+        invoice.setType(type);
+        invoice.setStatus(InvoiceStatus.DRAFT);
+        invoice.setDate(date);
+        invoice.setDueDate(dueDate);
+        invoice.setCustomer(customer);
+        invoice.setSupplier(supplier);
+        invoice.setSubtotal(subtotal);
+        invoice.setTax(tax);
+        invoiceRepository.save(invoice);
+        log.info("Invoice created: {}", number);
+        return invoice;
+    }
+
+    public void delete(Long id) {
+        log.info("Deleting invoice with id: {}", id);
+        invoiceRepository.findById(id).ifPresent(invoice -> {
+            if (invoice.getStatus() == InvoiceStatus.DRAFT) {
+                invoiceRepository.delete(invoice);
+                log.info("Invoice deleted: {}", invoice.getInvoiceNumber());
+            } else {
+                throw new IllegalStateException("Cannot delete non-draft invoice");
+            }
+        });
+    }
+
     public Invoice createSaleInvoice(Customer customer, LocalDate date, LocalDate dueDate) {
         log.info("Creating sales invoice for customer: {}", customer.getName());
         

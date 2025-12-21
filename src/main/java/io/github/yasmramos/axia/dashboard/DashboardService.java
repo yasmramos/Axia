@@ -170,7 +170,7 @@ public class DashboardService {
     private long countPendingInvoices() {
         return DB.find(Invoice.class)
                 .where()
-                .eq("status", InvoiceStatus.PENDING)
+                .eq("status", InvoiceStatus.DRAFT)
                 .findCount();
     }
 
@@ -215,7 +215,7 @@ public class DashboardService {
         List<Invoice> invoices = DB.find(Invoice.class)
                 .where()
                 .isNotNull("customer")
-                .eq("status", InvoiceStatus.PENDING)
+                .eq("status", InvoiceStatus.DRAFT)
                 .findList();
 
         return invoices.stream()
@@ -227,7 +227,7 @@ public class DashboardService {
         List<Invoice> invoices = DB.find(Invoice.class)
                 .where()
                 .isNotNull("supplier")
-                .eq("status", InvoiceStatus.PENDING)
+                .eq("status", InvoiceStatus.DRAFT)
                 .findList();
 
         return invoices.stream()

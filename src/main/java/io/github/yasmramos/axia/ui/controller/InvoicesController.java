@@ -208,7 +208,7 @@ public class InvoicesController implements Initializable {
         TextField taxField = new TextField("0.00");
 
         typeCombo.setOnAction(e -> {
-            boolean isSale = typeCombo.getValue() == InvoiceType.SALES;
+            boolean isSale = typeCombo.getValue() == InvoiceType.SALE;
             customerCombo.setDisable(!isSale);
             supplierCombo.setDisable(isSale);
         });
@@ -336,7 +336,7 @@ public class InvoicesController implements Initializable {
         totalInvoicesLabel.setText("Total: " + filteredInvoices.size());
 
         BigDecimal sales = filteredInvoices.stream()
-            .filter(i -> i.getType() == InvoiceType.SALES)
+            .filter(i -> i.getType() == InvoiceType.SALE)
             .map(Invoice::getTotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -346,7 +346,7 @@ public class InvoicesController implements Initializable {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal pending = filteredInvoices.stream()
-            .filter(i -> i.getStatus() == InvoiceStatus.PENDING)
+            .filter(i -> i.getStatus() == InvoiceStatus.DRAFT)
             .map(Invoice::getTotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 

@@ -188,8 +188,9 @@ public class CustomersController implements Initializable {
                             nameField.getText(),
                             taxIdField.getText(),
                             addressArea.getText(),
-                            emailField.getText(),
-                            phoneField.getText()
+                            "",
+                            phoneField.getText(),
+                            emailField.getText()
                         );
                     } else {
                         customer.setCode(codeField.getText());

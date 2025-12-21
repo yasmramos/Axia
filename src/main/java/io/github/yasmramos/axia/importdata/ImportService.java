@@ -99,7 +99,7 @@ public class ImportService {
                         String email = parts.length > 4 ? parts[4].trim() : null;
                         String phone = parts.length > 5 ? parts[5].trim() : null;
 
-                        customerService.create(code, name, taxId, address, email, phone);
+                        customerService.create(code, name, taxId, address, "", phone, email);
                         successCount++;
                     }
                 } catch (Exception e) {
@@ -143,7 +143,7 @@ public class ImportService {
                         String email = parts.length > 4 ? parts[4].trim() : null;
                         String phone = parts.length > 5 ? parts[5].trim() : null;
 
-                        supplierService.create(code, name, taxId, address, email, phone);
+                        supplierService.create(code, name, taxId, address, "", phone, email);
                         successCount++;
                     }
                 } catch (Exception e) {
