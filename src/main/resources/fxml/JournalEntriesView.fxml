@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="io.github.yasmramos.axia.ui.controller.JournalEntriesController"
+      spacing="15">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Journal Entries" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="+ New Entry" onAction="#showNewEntryDialog" styleClass="button-success"/>
+        <Button text="Export CSV" onAction="#exportToCsv"/>
+    </HBox>
+
+    <!-- Filters -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label text="From:"/>
+        <DatePicker fx:id="fromDatePicker" onAction="#applyFilter" prefWidth="130"/>
+        <Label text="To:"/>
+        <DatePicker fx:id="toDatePicker" onAction="#applyFilter" prefWidth="130"/>
+        <Label text="Search:"/>
+        <TextField fx:id="searchField" promptText="Description or reference..." prefWidth="200" onKeyReleased="#applyFilter"/>
+        <Button text="Clear" onAction="#clearFilters"/>
+    </HBox>
+
+    <!-- Split Pane: Entries list and Lines detail -->
+    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.5">
+        <!-- Entries Table -->
+        <VBox spacing="10">
+            <Label text="Entries" style="-fx-font-weight: bold;"/>
+            <TableView fx:id="entriesTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="numberColumn" text="#" prefWidth="60"/>
+                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+                    <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200"/>
+                    <TableColumn fx:id="referenceColumn" text="Reference" prefWidth="100"/>
+                    <TableColumn fx:id="debitTotalColumn" text="Debit" prefWidth="100"/>
+                    <TableColumn fx:id="creditTotalColumn" text="Credit" prefWidth="100"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- Lines Table -->
+        <VBox spacing="10">
+            <Label text="Entry Lines" style="-fx-font-weight: bold;"/>
+            <TableView fx:id="linesTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="lineAccountColumn" text="Account" prefWidth="200"/>
+                    <TableColumn fx:id="lineDescColumn" text="Description" prefWidth="150"/>
+                    <TableColumn fx:id="lineDebitColumn" text="Debit" prefWidth="100"/>
+                    <TableColumn fx:id="lineCreditColumn" text="Credit" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </SplitPane>
+
+    <!-- Summary -->
+    <HBox spacing="30" style="-fx-background-color: #f5f5f5; -fx-padding: 10; -fx-background-radius: 5;">
+        <Label fx:id="totalEntriesLabel" text="Total Entries: 0"/>
+        <Label fx:id="totalDebitLabel" text="Total Debit: $0.00"/>
+        <Label fx:id="totalCreditLabel" text="Total Credit: $0.00"/>
+        <Label fx:id="balanceLabel" text="Balance: $0.00"/>
+    </HBox>
+</VBox>
