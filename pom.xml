@@ -41,9 +41,13 @@
         <!-- Veld DI -->
         <dependency>
             <groupId>io.github.yasmramos</groupId>
-            <artifactId>veld-parent</artifactId>
+            <artifactId>veld-runtime</artifactId>
             <version>1.0.0</version>
-            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>io.github.yasmramos</groupId>
+            <artifactId>veld-annotations</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- Ebean ORM -->
@@ -119,6 +123,20 @@
 
     <build>
         <plugins>
+            <!-- Veld DI Plugin -->
+            <plugin>
+                <groupId>io.github.yasmramos</groupId>
+                <artifactId>veld-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
             <!-- Ebean Enhancement -->
             <plugin>
                 <groupId>io.ebean</groupId>
