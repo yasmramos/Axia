@@ -1,5 +1,7 @@
 package io.github.yasmramos.axia.service;
 
+import io.github.yasmramos.veld.Veld;
+
 import io.github.yasmramos.axia.model.Customer;
 import io.ebean.DB;
 import io.ebean.Database;
@@ -19,7 +21,7 @@ class CustomerServiceTest {
 
     @BeforeAll
     static void setUp() {
-        customerService = new CustomerService();
+        customerService = Veld.get(CustomerService.class);
     }
 
     @AfterAll

@@ -1,5 +1,7 @@
 package io.github.yasmramos.axia.service;
 
+import io.github.yasmramos.veld.Veld;
+
 import io.github.yasmramos.axia.model.Supplier;
 import io.ebean.DB;
 import io.ebean.Database;
@@ -19,7 +21,7 @@ class SupplierServiceTest {
 
     @BeforeAll
     static void setUp() {
-        supplierService = new SupplierService();
+        supplierService = Veld.get(SupplierService.class);
     }
 
     @AfterAll

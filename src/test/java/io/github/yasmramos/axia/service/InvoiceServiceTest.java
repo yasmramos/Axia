@@ -1,5 +1,7 @@
 package io.github.yasmramos.axia.service;
 
+import io.github.yasmramos.veld.Veld;
+
 import io.github.yasmramos.axia.model.*;
 import io.ebean.DB;
 import io.ebean.Database;
@@ -26,10 +28,10 @@ class InvoiceServiceTest {
 
     @BeforeAll
     static void setUp() {
-        invoiceService = new InvoiceService();
-        customerService = new CustomerService();
-        supplierService = new SupplierService();
-        accountService = new AccountService();
+        invoiceService = Veld.get(InvoiceService.class);
+        customerService = Veld.get(CustomerService.class);
+        supplierService = Veld.get(SupplierService.class);
+        accountService = Veld.get(AccountService.class);
         
         // Initialize default accounts
         accountService.initializeDefaultAccounts();

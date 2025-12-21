@@ -1,5 +1,7 @@
 package io.github.yasmramos.axia.service;
 
+import io.github.yasmramos.veld.Veld;
+
 import io.github.yasmramos.axia.model.*;
 import io.ebean.DB;
 import io.ebean.Database;
@@ -24,9 +26,9 @@ class ReportServiceTest {
 
     @BeforeAll
     static void setUp() {
-        reportService = new ReportService();
-        accountService = new AccountService();
-        journalEntryService = new JournalEntryService();
+        reportService = Veld.get(ReportService.class);
+        accountService = Veld.get(AccountService.class);
+        journalEntryService = Veld.get(JournalEntryService.class);
         
         // Initialize accounts and create some transactions
         accountService.initializeDefaultAccounts();

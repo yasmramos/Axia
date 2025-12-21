@@ -1,5 +1,7 @@
 package io.github.yasmramos.axia.service;
 
+import io.github.yasmramos.veld.Veld;
+
 import io.github.yasmramos.axia.model.Account;
 import io.github.yasmramos.axia.model.AccountType;
 import io.ebean.DB;
@@ -21,7 +23,7 @@ class AccountServiceTest {
 
     @BeforeAll
     static void setUp() {
-        accountService = new AccountService();
+        accountService = Veld.get(AccountService.class);
     }
 
     @AfterAll
