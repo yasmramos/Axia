@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.service;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.github.yasmramos.axia.model.Account;
 import io.github.yasmramos.axia.model.AccountType;
 import io.github.yasmramos.axia.repository.AccountRepository;
@@ -19,6 +22,7 @@ import java.util.Optional;
  * @author Yasmany Ramos García
  * @version 1.0.0
  */
+@Component
 public class AccountService {
 
     private static final Logger log = LoggerFactory.getLogger(AccountService.class);

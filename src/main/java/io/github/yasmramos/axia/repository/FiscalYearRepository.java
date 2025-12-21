@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.repository;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.model.FiscalYear;
 import io.ebean.Database;
@@ -13,6 +16,7 @@ import java.util.Optional;
  * @author Yasmany Ramos García
  * @version 1.0.0
  */
+@Component
 public class FiscalYearRepository {
 
     private final Database db;

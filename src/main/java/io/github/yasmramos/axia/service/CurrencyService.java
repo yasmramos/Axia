@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.service;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.ebean.DB;
 import io.github.yasmramos.axia.model.Currency;
 import org.slf4j.Logger;
@@ -14,6 +17,7 @@ import java.util.Optional;
  *
  * @author Yasmany Ramos Garcia
  */
+@Component
 public class CurrencyService {
 
     private static final Logger logger = LoggerFactory.getLogger(CurrencyService.class);

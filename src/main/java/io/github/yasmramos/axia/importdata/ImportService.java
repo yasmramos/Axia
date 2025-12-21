@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.importdata;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.github.yasmramos.axia.model.*;
 import io.github.yasmramos.axia.service.*;
 import org.slf4j.Logger;
@@ -14,6 +17,7 @@ import java.util.List;
  *
  * @author Yasmany Ramos Garcia
  */
+@Component
 public class ImportService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImportService.class);

@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.validation;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -8,6 +11,7 @@ import java.util.List;
  *
  * @author Yasmany Ramos Garcia
  */
+@Component
 public class ValidationResult {
 
     private final boolean valid;

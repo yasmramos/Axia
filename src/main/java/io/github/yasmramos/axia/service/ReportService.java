@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.service;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.github.yasmramos.axia.model.*;
 import io.github.yasmramos.axia.repository.AccountRepository;
 import io.github.yasmramos.axia.repository.JournalEntryRepository;
@@ -25,6 +28,7 @@ import java.util.*;
  * @author Yasmany Ramos García
  * @version 1.0.0
  */
+@Component
 public class ReportService {
 
     private static final Logger log = LoggerFactory.getLogger(ReportService.class);

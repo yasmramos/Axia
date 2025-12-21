@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.repository;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.model.Account;
 import io.github.yasmramos.axia.model.JournalEntry;
@@ -10,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class JournalEntryRepository {
 
     private final Database db;

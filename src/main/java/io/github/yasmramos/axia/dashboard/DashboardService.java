@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.dashboard;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.ebean.DB;
 import io.github.yasmramos.axia.model.*;
 import org.slf4j.Logger;
@@ -18,6 +21,7 @@ import java.util.Map;
  *
  * @author Yasmany Ramos Garcia
  */
+@Component
 public class DashboardService {
 
     private static final Logger logger = LoggerFactory.getLogger(DashboardService.class);

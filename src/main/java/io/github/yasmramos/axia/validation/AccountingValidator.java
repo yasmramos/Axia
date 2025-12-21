@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.validation;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.github.yasmramos.axia.model.JournalEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,7 @@ import java.util.List;
  *
  * @author Yasmany Ramos Garcia
  */
+@Component
 public class AccountingValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountingValidator.class);

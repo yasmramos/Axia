@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.audit;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.ebean.DB;
 import io.github.yasmramos.axia.model.AuditLog;
 import org.slf4j.Logger;
@@ -14,6 +17,7 @@ import java.util.List;
  *
  * @author Yasmany Ramos Garcia
  */
+@Component
 public class AuditService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuditService.class);

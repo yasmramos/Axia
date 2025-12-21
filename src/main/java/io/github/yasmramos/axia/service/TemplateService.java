@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.service;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.ebean.DB;
 import io.github.yasmramos.axia.model.JournalEntry;
 import io.github.yasmramos.axia.model.JournalEntryTemplate;
@@ -17,6 +20,7 @@ import java.util.Optional;
  *
  * @author Yasmany Ramos Garcia
  */
+@Component
 public class TemplateService {
 
     private static final Logger logger = LoggerFactory.getLogger(TemplateService.class);

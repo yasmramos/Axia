@@ -1,5 +1,8 @@
 package io.github.yasmramos.axia.repository;
 
+import io.github.yasmramos.veld.annotation.Component;
+import io.github.yasmramos.veld.annotation.Inject;
+
 import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.model.Account;
 import io.github.yasmramos.axia.model.AccountType;
@@ -17,6 +20,7 @@ import java.util.Optional;
  * @author Yasmany Ramos García
  * @version 1.0.0
  */
+@Component
 public class AccountRepository {
 
     private final Database db;
