@@ -36,6 +36,7 @@ public class ReportService {
 
     private final AccountRepository accountRepository;
     private final JournalEntryRepository journalEntryRepository;
+    private final InvoiceRepository invoiceRepository;
 
     @Inject
     public ReportService(AccountRepository accountRepository, JournalEntryRepository journalEntryRepository,

@@ -1,5 +1,7 @@
 package io.github.yasmramos.axia.ui.controller;
 
+import io.github.yasmramos.veld.Veld;
+
 import io.github.yasmramos.axia.model.*;
 import io.github.yasmramos.axia.service.*;
 import io.github.yasmramos.axia.export.ExportService;
@@ -68,9 +70,9 @@ public class InvoicesController implements Initializable {
     private FilteredList<Invoice> filteredInvoices;
 
     public InvoicesController() {
-        this.invoiceService = new InvoiceService();
-        this.customerService = new CustomerService();
-        this.supplierService = new SupplierService();
+        this.invoiceService = Veld.get(InvoiceService.class);
+        this.customerService = Veld.get(CustomerService.class);
+        this.supplierService = Veld.get(SupplierService.class);
         this.exportService = new ExportService();
     }
 

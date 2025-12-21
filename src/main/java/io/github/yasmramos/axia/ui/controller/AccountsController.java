@@ -1,4 +1,6 @@
 package io.github.yasmramos.axia.ui.controller;
+
+import io.github.yasmramos.veld.Veld;
 import javafx.scene.layout.GridPane;
 
 import io.github.yasmramos.axia.model.Account;
@@ -62,7 +64,7 @@ public class AccountsController implements Initializable {
     private FilteredList<Account> filteredAccounts;
 
     public AccountsController() {
-        this.accountService = new AccountService();
+        this.accountService = Veld.get(AccountService.class);
         this.exportService = new ExportService();
     }
 

@@ -1,5 +1,7 @@
 package io.github.yasmramos.axia.ui.controller;
 
+import io.github.yasmramos.veld.Veld;
+
 import io.github.yasmramos.axia.model.*;
 import io.github.yasmramos.axia.service.*;
 import io.github.yasmramos.axia.export.ExportService;
@@ -70,8 +72,8 @@ public class JournalEntriesController implements Initializable {
     private FilteredList<JournalEntry> filteredEntries;
 
     public JournalEntriesController() {
-        this.entryService = new JournalEntryService();
-        this.accountService = new AccountService();
+        this.entryService = Veld.get(JournalEntryService.class);
+        this.accountService = Veld.get(AccountService.class);
         this.exportService = new ExportService();
     }
 

@@ -1,5 +1,7 @@
 package io.github.yasmramos.axia;
 
+import io.github.yasmramos.veld.Veld;
+
 import io.github.yasmramos.axia.config.DatabaseManager;
 import io.github.yasmramos.axia.service.AccountService;
 import io.github.yasmramos.axia.service.FiscalYearService;
@@ -34,7 +36,7 @@ public class AxiaApplication extends Application {
         DatabaseManager.getDatabase();
 
         // Initialize default data
-        AccountService accountService = new AccountService();
+        AccountService accountService = Veld.get(AccountService.class);
         accountService.initializeDefaultAccounts();
 
         FiscalYearService fiscalYearService = new FiscalYearService();
