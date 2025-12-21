@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="io.github.yasmramos.axia.ui.controller.InvoicesController"
+      spacing="15">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Invoices" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="+ New Invoice" onAction="#showNewInvoiceDialog" styleClass="button-success"/>
+        <Button text="Export CSV" onAction="#exportToCsv"/>
+    </HBox>
+
+    <!-- Filters -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label text="Type:"/>
+        <ComboBox fx:id="typeFilterCombo" onAction="#applyFilter" prefWidth="120"/>
+        <Label text="Status:"/>
+        <ComboBox fx:id="statusFilterCombo" onAction="#applyFilter" prefWidth="120"/>
+        <Label text="Search:"/>
+        <TextField fx:id="searchField" promptText="Invoice number..." prefWidth="150" onKeyReleased="#applyFilter"/>
+        <Label text="From:"/>
+        <DatePicker fx:id="fromDatePicker" onAction="#applyFilter" prefWidth="130"/>
+        <Label text="To:"/>
+        <DatePicker fx:id="toDatePicker" onAction="#applyFilter" prefWidth="130"/>
+        <Button text="Clear" onAction="#clearFilters"/>
+    </HBox>
+
+    <!-- Invoices Table -->
+    <TableView fx:id="invoicesTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="numberColumn" text="Number" prefWidth="100"/>
+            <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+            <TableColumn fx:id="dueDateColumn" text="Due Date" prefWidth="100"/>
+            <TableColumn fx:id="typeColumn" text="Type" prefWidth="80"/>
+            <TableColumn fx:id="partnerColumn" text="Customer/Supplier" prefWidth="180"/>
+            <TableColumn fx:id="subtotalColumn" text="Subtotal" prefWidth="100"/>
+            <TableColumn fx:id="taxColumn" text="Tax" prefWidth="80"/>
+            <TableColumn fx:id="totalColumn" text="Total" prefWidth="100"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="90"/>
+            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180"/>
+        </columns>
+    </TableView>
+
+    <!-- Summary -->
+    <HBox spacing="30" style="-fx-background-color: #f5f5f5; -fx-padding: 10; -fx-background-radius: 5;">
+        <Label fx:id="totalInvoicesLabel" text="Total: 0"/>
+        <Label fx:id="totalSalesLabel" text="Sales: $0.00"/>
+        <Label fx:id="totalPurchasesLabel" text="Purchases: $0.00"/>
+        <Label fx:id="pendingLabel" text="Pending: $0.00"/>
+    </HBox>
+</VBox>
