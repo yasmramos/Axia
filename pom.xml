@@ -38,13 +38,6 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- Jakarta Persistence API -->
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-        
         <!-- Ebean ORM -->
         <dependency>
             <groupId>io.ebean</groupId>

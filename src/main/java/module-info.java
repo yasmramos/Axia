@@ -7,7 +7,7 @@ module io.github.yasmramos.axia {
     requires io.ebean.core;
     requires io.ebean.datasource;
     requires java.sql;
-    requires jakarta.persistence;
+
     
     requires org.slf4j;
     requires com.zaxxer.hikari;
