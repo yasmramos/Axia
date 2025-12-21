@@ -37,11 +37,9 @@ public class JournalEntryService {
     private final AccountRepository accountRepository;
     private final Database db;
 
-    public JournalEntryService() {
-        this.journalEntryRepository = new JournalEntryRepository();
-        this.accountRepository = new AccountRepository();
-        this.db = DatabaseManager.getDatabase();
-        log.debug("JournalEntryService initialized");
+    @Inject
+    public JournalEntryService(JournalEntryRepository journalEntryRepository) {
+        this.journalEntryRepository = journalEntryRepository;
     }
 
     public JournalEntry create(LocalDate date, String description, String reference) {

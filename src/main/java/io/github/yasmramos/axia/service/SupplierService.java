@@ -24,8 +24,9 @@ public class SupplierService {
 
     private final SupplierRepository supplierRepository;
 
-    public SupplierService() {
-        this.supplierRepository = new SupplierRepository();
+    @Inject
+    public SupplierService(SupplierRepository supplierRepository) {
+        this.supplierRepository = supplierRepository;
     }
 
     public Supplier create(String code, String name, String taxId, String address,

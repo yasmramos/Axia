@@ -29,8 +29,9 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public AccountService() {
-        this.accountRepository = new AccountRepository();
+    @Inject
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
         log.debug("AccountService initialized");
     }
 

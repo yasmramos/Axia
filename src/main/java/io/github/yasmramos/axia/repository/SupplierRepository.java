@@ -21,6 +21,7 @@ public class SupplierRepository {
 
     private final Database db;
 
+    @Inject
     public SupplierRepository() {
         this.db = DatabaseManager.getDatabase();
     }

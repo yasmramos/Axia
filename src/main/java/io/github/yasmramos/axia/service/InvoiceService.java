@@ -36,10 +36,12 @@ public class InvoiceService {
     private final JournalEntryService journalEntryService;
     private final Database db;
 
-    public InvoiceService() {
-        this.invoiceRepository = new InvoiceRepository();
-        this.accountRepository = new AccountRepository();
-        this.journalEntryService = new JournalEntryService();
+    @Inject
+    public InvoiceService(InvoiceRepository invoiceRepository, AccountRepository accountRepository, 
+                         JournalEntryService journalEntryService) {
+        this.invoiceRepository = invoiceRepository;
+        this.accountRepository = accountRepository;
+        this.journalEntryService = journalEntryService;
         this.db = DatabaseManager.getDatabase();
         log.debug("InvoiceService initialized");
     }

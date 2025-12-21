@@ -28,6 +28,7 @@ public class AccountRepository {
     /**
      * Creates a new AccountRepository instance.
      */
+    @Inject
     public AccountRepository() {
         this.db = DatabaseManager.getDatabase();
     }

@@ -18,6 +18,7 @@ public class JournalEntryRepository {
 
     private final Database db;
 
+    @Inject
     public JournalEntryRepository() {
         this.db = DatabaseManager.getDatabase();
     }

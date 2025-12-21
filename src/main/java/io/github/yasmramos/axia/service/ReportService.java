@@ -36,9 +36,12 @@ public class ReportService {
     private final AccountRepository accountRepository;
     private final JournalEntryRepository journalEntryRepository;
 
-    public ReportService() {
-        this.accountRepository = new AccountRepository();
-        this.journalEntryRepository = new JournalEntryRepository();
+    @Inject
+    public ReportService(AccountRepository accountRepository, JournalEntryRepository journalEntryRepository,
+                        InvoiceRepository invoiceRepository) {
+        this.accountRepository = accountRepository;
+        this.journalEntryRepository = journalEntryRepository;
+        this.invoiceRepository = invoiceRepository;
     }
 
     // Balance General

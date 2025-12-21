@@ -21,6 +21,7 @@ public class CustomerRepository {
 
     private final Database db;
 
+    @Inject
     public CustomerRepository() {
         this.db = DatabaseManager.getDatabase();
     }

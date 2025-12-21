@@ -22,6 +22,7 @@ public class InvoiceRepository {
 
     private final Database db;
 
+    @Inject
     public InvoiceRepository() {
         this.db = DatabaseManager.getDatabase();
     }

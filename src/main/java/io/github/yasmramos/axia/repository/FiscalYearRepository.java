@@ -21,6 +21,7 @@ public class FiscalYearRepository {
 
     private final Database db;
 
+    @Inject
     public FiscalYearRepository() {
         this.db = DatabaseManager.getDatabase();
     }
