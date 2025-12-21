@@ -17,6 +17,7 @@ public class ImportResult {
     private final int successCount;
     private final List<String> errors;
 
+    @Inject
     public ImportResult(int successCount, List<String> errors) {
         this.successCount = successCount;
         this.errors = errors != null ? errors : Collections.emptyList();

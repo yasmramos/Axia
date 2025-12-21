@@ -27,6 +27,7 @@ public class TemplateService {
 
     private final JournalEntryService journalEntryService;
 
+    @Inject
     public TemplateService(JournalEntryService journalEntryService) {
         this.journalEntryService = journalEntryService;
     }

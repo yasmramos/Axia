@@ -17,6 +17,7 @@ public class ValidationResult {
     private final boolean valid;
     private final List<String> errors;
 
+    @Inject
     public ValidationResult(boolean valid, List<String> errors) {
         this.valid = valid;
         this.errors = errors != null ? errors : Collections.emptyList();

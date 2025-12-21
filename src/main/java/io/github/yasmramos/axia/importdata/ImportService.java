@@ -26,6 +26,7 @@ public class ImportService {
     private final CustomerService customerService;
     private final SupplierService supplierService;
 
+    @Inject
     public ImportService(AccountService accountService, CustomerService customerService, SupplierService supplierService) {
         this.accountService = accountService;
         this.customerService = customerService;
