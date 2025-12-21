@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="io.github.yasmramos.axia.ui.controller.MainController"
+            prefWidth="1200" prefHeight="800">
+
+    <!-- Top Menu Bar -->
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem text="Backup" onAction="#handleBackup"/>
+                    <MenuItem text="Restore" onAction="#handleRestore"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Exit" onAction="#handleExit"/>
+                </Menu>
+                <Menu text="View">
+                    <MenuItem text="Dashboard" onAction="#showDashboard"/>
+                    <MenuItem text="Accounts" onAction="#showAccounts"/>
+                    <MenuItem text="Journal Entries" onAction="#showJournalEntries"/>
+                    <MenuItem text="Customers" onAction="#showCustomers"/>
+                    <MenuItem text="Suppliers" onAction="#showSuppliers"/>
+                    <MenuItem text="Invoices" onAction="#showInvoices"/>
+                </Menu>
+                <Menu text="Reports">
+                    <MenuItem text="Trial Balance" onAction="#showTrialBalance"/>
+                    <MenuItem text="Balance Sheet" onAction="#showBalanceSheet"/>
+                    <MenuItem text="Income Statement" onAction="#showIncomeStatement"/>
+                </Menu>
+                <Menu text="Settings">
+                    <MenuItem text="Fiscal Year" onAction="#showFiscalYear"/>
+                    <MenuItem text="Currencies" onAction="#showCurrencies"/>
+                </Menu>
+                <Menu text="Help">
+                    <MenuItem text="About" onAction="#showAbout"/>
+                </Menu>
+            </MenuBar>
+        </VBox>
+    </top>
+
+    <!-- Left Navigation -->
+    <left>
+        <VBox spacing="5" styleClass="sidebar" prefWidth="200">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="NAVIGATION" styleClass="sidebar-title"/>
+            <Button text="Dashboard" onAction="#showDashboard" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Chart of Accounts" onAction="#showAccounts" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Journal Entries" onAction="#showJournalEntries" maxWidth="Infinity" styleClass="nav-button"/>
+            <Separator/>
+            <Label text="PARTNERS" styleClass="sidebar-title"/>
+            <Button text="Customers" onAction="#showCustomers" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Suppliers" onAction="#showSuppliers" maxWidth="Infinity" styleClass="nav-button"/>
+            <Separator/>
+            <Label text="BILLING" styleClass="sidebar-title"/>
+            <Button text="Invoices" onAction="#showInvoices" maxWidth="Infinity" styleClass="nav-button"/>
+            <Separator/>
+            <Label text="REPORTS" styleClass="sidebar-title"/>
+            <Button text="Trial Balance" onAction="#showTrialBalance" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Balance Sheet" onAction="#showBalanceSheet" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Income Statement" onAction="#showIncomeStatement" maxWidth="Infinity" styleClass="nav-button"/>
+        </VBox>
+    </left>
+
+    <!-- Center Content Area -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </StackPane>
+    </center>
+
+    <!-- Bottom Status Bar -->
+    <bottom>
+        <HBox spacing="10" styleClass="status-bar">
+            <padding>
+                <Insets top="5" right="10" bottom="5" left="10"/>
+            </padding>
+            <Label fx:id="statusLabel" text="Ready"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Label fx:id="fiscalYearLabel" text="Fiscal Year: 2024"/>
+            <Label fx:id="userLabel" text=""/>
+        </HBox>
+    </bottom>
+</BorderPane>
