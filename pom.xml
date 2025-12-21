@@ -38,6 +38,14 @@
             <version>${javafx.version}</version>
         </dependency>
 
+        <!-- Veld DI -->
+        <dependency>
+            <groupId>io.github.yasmramos</groupId>
+            <artifactId>veld-parent</artifactId>
+            <version>1.0.0</version>
+            <type>pom</type>
+        </dependency>
+
         <!-- Ebean ORM -->
         <dependency>
             <groupId>io.ebean</groupId>
