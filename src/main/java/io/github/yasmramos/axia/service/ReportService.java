@@ -5,6 +5,7 @@ import io.github.yasmramos.veld.annotation.Inject;
 
 import io.github.yasmramos.axia.model.*;
 import io.github.yasmramos.axia.repository.AccountRepository;
+import io.github.yasmramos.axia.repository.InvoiceRepository;
 import io.github.yasmramos.axia.repository.JournalEntryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
