@@ -187,6 +187,10 @@
                             <version>1.0.0</version>
                         </path>
                     </annotationProcessorPaths>
+                    <!-- Evitar regeneración -->
+                    <compilerArgs>
+                        <arg>-Aebean.querybean.overwrite=false</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
