@@ -154,7 +154,7 @@
                         </goals>
                         <configuration>
                             <compilerArgs>
-                                <arg>-proc:none</arg>
+                                <arg>-proc:full</arg>
                             </compilerArgs>
                         </configuration>
                     </execution>
