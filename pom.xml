@@ -159,6 +159,13 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <!-- Excluir paquete de entidades -->
+                    <excludes>
+                        <exclude>**/model/**</exclude>
+                        <exclude>**/query/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <plugin>
