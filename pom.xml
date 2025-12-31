@@ -140,33 +140,6 @@
                     </execution>
                 </executions>
             </plugin>
-            
-            <!-- Veld DI Plugin -->
-            <plugin>
-                <groupId>io.github.yasmramos</groupId>
-                <artifactId>veld-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <compilerArgs>
-                                <arg>-proc:full</arg>
-                            </compilerArgs>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- Excluir paquete de entidades -->
-                    <excludes>
-                        <exclude>**/model/**</exclude>
-                        <exclude>**/query/**</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
