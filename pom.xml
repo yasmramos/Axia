@@ -163,6 +163,7 @@
                     <!-- Evitar regeneración -->
                     <compilerArgs>
                         <arg>-Aebean.querybean.overwrite=false</arg>
+                        <arg>-Aveld.package=io.github.yasmramos</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

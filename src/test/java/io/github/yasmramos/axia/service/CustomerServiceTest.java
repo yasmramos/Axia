@@ -1,11 +1,13 @@
 package io.github.yasmramos.axia.service;
 
-import io.github.yasmramos.veld.Veld;
 
 import io.github.yasmramos.axia.model.Customer;
+import io.github.yasmramos.axia.repository.CustomerRepository;
 import io.ebean.DB;
 import io.ebean.Database;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import io.github.yasmramos.axia.EmbeddedPostgresExtension;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for CustomerService.
  */
+@ExtendWith(EmbeddedPostgresExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CustomerServiceTest {
 
@@ -21,7 +24,7 @@ class CustomerServiceTest {
 
     @BeforeAll
     static void setUp() {
-        customerService = Veld.get(CustomerService.class);
+        customerService = new CustomerService(new CustomerRepository());
     }
 
     @AfterAll

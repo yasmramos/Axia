@@ -2,4 +2,11 @@ ebean:
   test:
     platform: postgres
     ddlMode: dropCreate
-    dbName: test_db
+    dbName: postgres
+    useDocker: false
+
+datasource:
+  db:
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/postgres

@@ -4,6 +4,8 @@ import io.github.yasmramos.axia.model.FiscalYear;
 import io.ebean.DB;
 import io.ebean.Database;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import io.github.yasmramos.axia.EmbeddedPostgresExtension;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for FiscalYearService.
  */
+@ExtendWith(EmbeddedPostgresExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FiscalYearServiceTest {
 

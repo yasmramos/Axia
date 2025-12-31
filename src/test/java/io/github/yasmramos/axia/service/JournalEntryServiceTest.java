@@ -1,11 +1,14 @@
 package io.github.yasmramos.axia.service;
 
-import io.github.yasmramos.veld.Veld;
 
 import io.github.yasmramos.axia.model.*;
+import io.github.yasmramos.axia.repository.AccountRepository;
+import io.github.yasmramos.axia.repository.JournalEntryRepository;
 import io.ebean.DB;
 import io.ebean.Database;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import io.github.yasmramos.axia.EmbeddedPostgresExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for JournalEntryService.
  */
+@ExtendWith(EmbeddedPostgresExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JournalEntryServiceTest {
 
@@ -25,8 +29,11 @@ class JournalEntryServiceTest {
 
     @BeforeAll
     static void setUp() {
-        journalEntryService = Veld.get(JournalEntryService.class);
-        accountService = Veld.get(AccountService.class);
+        AccountRepository accountRepository = new AccountRepository();
+        JournalEntryRepository journalEntryRepository = new JournalEntryRepository();
+        
+        accountService = new AccountService(accountRepository);
+        journalEntryService = new JournalEntryService(journalEntryRepository, accountRepository);
         
         // Create test accounts
         cashAccount = accountService.create("TEST-1", "Test Cash", AccountType.ASSET, null);
