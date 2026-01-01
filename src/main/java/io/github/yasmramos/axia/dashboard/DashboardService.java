@@ -186,8 +186,8 @@ public class DashboardService {
         List<Invoice> invoices = DB.find(Invoice.class)
                 .where()
                 .isNotNull("customer")
-                .ge("invoiceDate", startDate)
-                .le("invoiceDate", endDate)
+                .ge("date", startDate)
+                .le("date", endDate)
                 .eq("status", InvoiceStatus.PAID)
                 .findList();
 
@@ -200,8 +200,8 @@ public class DashboardService {
         List<Invoice> invoices = DB.find(Invoice.class)
                 .where()
                 .isNotNull("supplier")
-                .ge("invoiceDate", startDate)
-                .le("invoiceDate", endDate)
+                .ge("date", startDate)
+                .le("date", endDate)
                 .eq("status", InvoiceStatus.PAID)
                 .findList();
 
