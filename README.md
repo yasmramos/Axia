@@ -2,9 +2,9 @@
 
 A lightweight, offline-first accounting system built with Java, Ebean ORM, and JavaFX. Designed for small businesses and educational purposes.
 
+[![CI](https://github.com/yasmramos/Axia/actions/workflows/ci.yml/badge.svg)](https://github.com/yasmramos/Axia/actions/workflows/ci.yml)
+[![Coverage](.github/badges/jacoco.svg)](https://github.com/yasmramos/Axia/actions)
 ![Java](https://img.shields.io/badge/Java-17+-orange)
-![Maven](https://img.shields.io/badge/Maven-3.8+-blue)
-![Tests](https://img.shields.io/badge/Tests-106%20passing-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Features
