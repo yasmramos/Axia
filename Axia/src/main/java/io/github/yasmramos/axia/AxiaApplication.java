@@ -39,7 +39,7 @@ public class AxiaApplication extends Application {
         AccountService accountService = Veld.get(AccountService.class);
         accountService.initializeDefaultAccounts();
 
-        FiscalYearService fiscalYearService = new FiscalYearService();
+        FiscalYearService fiscalYearService = Veld.get(FiscalYearService.class);
         fiscalYearService.initializeCurrentYear();
         
         log.info("Axia Accounting System initialized successfully");

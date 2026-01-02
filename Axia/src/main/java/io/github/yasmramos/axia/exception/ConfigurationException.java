@@ -80,12 +80,9 @@ public class ConfigurationException extends AxiaException {
      * 
      * @param propertyName the missing property name
      */
-    public ConfigurationException(String propertyName) {
-        super("Required configuration property not found: " + propertyName, 
-              "CONFIG_MISSING_PROPERTY", "CONFIGURATION");
-        this.propertyName = propertyName;
-        this.propertyValue = null;
-        this.configErrorType = ConfigErrorType.MISSING_PROPERTY;
+    public ConfigurationException forProperty(String propertyName) {
+        return new ConfigurationException("Required configuration property not found: " + propertyName, 
+              ConfigErrorType.MISSING_PROPERTY, propertyName, null);
     }
 
     /**
@@ -176,7 +173,8 @@ public class ConfigurationException extends AxiaException {
      * @return the exception instance
      */
     public static ConfigurationException missingProperty(String propertyName) {
-        return new ConfigurationException(propertyName);
+        return new ConfigurationException("Required configuration property not found: " + propertyName, 
+              ConfigErrorType.MISSING_PROPERTY, propertyName, null);
     }
 
     /**

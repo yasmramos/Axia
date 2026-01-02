@@ -223,9 +223,9 @@ public final class ExceptionHandler {
      */
     public static boolean shouldShutdown(Exception exception) {
         if (exception instanceof ConfigurationException) {
-            ConfigErrorType errorType = ((ConfigurationException) exception).getConfigErrorType();
-            return errorType == ConfigErrorType.MISSING_PROPERTY ||
-                   errorType == ConfigErrorType.FILE_NOT_FOUND;
+            ConfigurationException.ConfigErrorType errorType = ((ConfigurationException) exception).getConfigErrorType();
+            return errorType == ConfigurationException.ConfigErrorType.MISSING_PROPERTY ||
+                   errorType == ConfigurationException.ConfigErrorType.FILE_NOT_FOUND;
         }
 
         if (exception instanceof DatabaseException) {
