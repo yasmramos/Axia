@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="io.github.yasmramos.axia.ui.controller.DashboardController"
+      spacing="20">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <Label text="Dashboard" styleClass="view-title" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+
+    <!-- KPI Cards Row -->
+    <HBox spacing="20">
+        <VBox styleClass="kpi-card" style="-fx-background-color: #e3f2fd; -fx-padding: 20; -fx-background-radius: 10;">
+            <Label text="Total Accounts" style="-fx-text-fill: #1976d2;"/>
+            <Label fx:id="totalAccountsLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+        </VBox>
+        <VBox styleClass="kpi-card" style="-fx-background-color: #e8f5e9; -fx-padding: 20; -fx-background-radius: 10;">
+            <Label text="Total Customers" style="-fx-text-fill: #388e3c;"/>
+            <Label fx:id="totalCustomersLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+        </VBox>
+        <VBox styleClass="kpi-card" style="-fx-background-color: #fff3e0; -fx-padding: 20; -fx-background-radius: 10;">
+            <Label text="Total Suppliers" style="-fx-text-fill: #f57c00;"/>
+            <Label fx:id="totalSuppliersLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+        </VBox>
+        <VBox styleClass="kpi-card" style="-fx-background-color: #fce4ec; -fx-padding: 20; -fx-background-radius: 10;">
+            <Label text="Pending Invoices" style="-fx-text-fill: #c2185b;"/>
+            <Label fx:id="pendingInvoicesLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Financial Summary -->
+    <HBox spacing="20">
+        <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-background-color: #f5f5f5; -fx-padding: 20; -fx-background-radius: 10;">
+            <Label text="Financial Summary" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <GridPane hgap="20" vgap="10">
+                <Label text="Accounts Receivable:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <Label fx:id="receivableLabel" text="$0.00" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+                <Label text="Accounts Payable:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <Label fx:id="payableLabel" text="$0.00" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+                <Label text="Net Position:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <Label fx:id="netPositionLabel" text="$0.00" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+            </GridPane>
+        </VBox>
+
+        <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-background-color: #f5f5f5; -fx-padding: 20; -fx-background-radius: 10;">
+            <Label text="Quick Actions" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <Button text="New Journal Entry" onAction="#newJournalEntry" maxWidth="Infinity"/>
+            <Button text="New Invoice" onAction="#newInvoice" maxWidth="Infinity"/>
+            <Button text="New Customer" onAction="#newCustomer" maxWidth="Infinity"/>
+            <Button text="New Supplier" onAction="#newSupplier" maxWidth="Infinity"/>
+        </VBox>
+    </HBox>
+
+    <!-- Recent Activity -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS" style="-fx-background-color: #f5f5f5; -fx-padding: 20; -fx-background-radius: 10;">
+        <Label text="Recent Journal Entries" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        <TableView fx:id="recentEntriesTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+                <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="300"/>
+                <TableColumn fx:id="debitColumn" text="Debit" prefWidth="120"/>
+                <TableColumn fx:id="creditColumn" text="Credit" prefWidth="120"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>

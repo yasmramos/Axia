@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="io.github.yasmramos.axia.ui.controller.AccountsController"
+      spacing="15">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Chart of Accounts" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="+ New Account" onAction="#showNewAccountDialog" styleClass="button-success"/>
+        <Button text="Export CSV" onAction="#exportToCsv"/>
+    </HBox>
+
+    <!-- Filters -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label text="Filter by Type:"/>
+        <ComboBox fx:id="typeFilterCombo" onAction="#applyFilter" prefWidth="150"/>
+        <Label text="Search:"/>
+        <TextField fx:id="searchField" promptText="Search by code or name..." prefWidth="250" onKeyReleased="#applyFilter"/>
+        <CheckBox fx:id="showInactiveCheck" text="Show Inactive" onAction="#applyFilter"/>
+        <Button text="Clear" onAction="#clearFilters"/>
+    </HBox>
+
+    <!-- Accounts Table -->
+    <TableView fx:id="accountsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="codeColumn" text="Code" prefWidth="100"/>
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="250"/>
+            <TableColumn fx:id="typeColumn" text="Type" prefWidth="120"/>
+            <TableColumn fx:id="parentColumn" text="Parent Account" prefWidth="150"/>
+            <TableColumn fx:id="balanceColumn" text="Balance" prefWidth="120"/>
+            <TableColumn fx:id="activeColumn" text="Active" prefWidth="80"/>
+            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <!-- Summary -->
+    <HBox spacing="30" style="-fx-background-color: #f5f5f5; -fx-padding: 10; -fx-background-radius: 5;">
+        <Label fx:id="totalAccountsLabel" text="Total Accounts: 0"/>
+        <Label fx:id="assetsTotalLabel" text="Assets: $0.00"/>
+        <Label fx:id="liabilitiesTotalLabel" text="Liabilities: $0.00"/>
+        <Label fx:id="equityTotalLabel" text="Equity: $0.00"/>
+    </HBox>
+</VBox>

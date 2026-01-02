@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="io.github.yasmramos.axia.ui.controller.SuppliersController"
+      spacing="15">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Suppliers" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="+ New Supplier" onAction="#showNewSupplierDialog" styleClass="button-success"/>
+        <Button text="Export CSV" onAction="#exportToCsv"/>
+    </HBox>
+
+    <!-- Filters -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label text="Search:"/>
+        <TextField fx:id="searchField" promptText="Search by name, code or tax ID..." prefWidth="300" onKeyReleased="#applyFilter"/>
+        <CheckBox fx:id="showInactiveCheck" text="Show Inactive" onAction="#applyFilter"/>
+        <Button text="Clear" onAction="#clearFilters"/>
+    </HBox>
+
+    <!-- Suppliers Table -->
+    <TableView fx:id="suppliersTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="codeColumn" text="Code" prefWidth="100"/>
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="200"/>
+            <TableColumn fx:id="taxIdColumn" text="Tax ID" prefWidth="120"/>
+            <TableColumn fx:id="emailColumn" text="Email" prefWidth="180"/>
+            <TableColumn fx:id="phoneColumn" text="Phone" prefWidth="120"/>
+            <TableColumn fx:id="addressColumn" text="Address" prefWidth="200"/>
+            <TableColumn fx:id="activeColumn" text="Active" prefWidth="70"/>
+            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <!-- Summary -->
+    <HBox spacing="30" style="-fx-background-color: #f5f5f5; -fx-padding: 10; -fx-background-radius: 5;">
+        <Label fx:id="totalSuppliersLabel" text="Total Suppliers: 0"/>
+        <Label fx:id="activeSuppliersLabel" text="Active: 0"/>
+        <Label fx:id="totalPayableLabel" text="Total Payable: $0.00"/>
+    </HBox>
+</VBox>

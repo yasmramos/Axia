@@ -1,0 +1,3 @@
+entity-packages: io.github.yasmramos.axia.model
+transactional-packages: io.github.yasmramos.axia.service
+querybean-packages: io.github.yasmramos.axia.model
