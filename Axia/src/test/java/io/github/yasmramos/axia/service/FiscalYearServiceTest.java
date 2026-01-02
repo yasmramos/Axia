@@ -1,6 +1,7 @@
 package io.github.yasmramos.axia.service;
 
 import io.github.yasmramos.axia.model.FiscalYear;
+import io.github.yasmramos.axia.repository.FiscalYearRepository;
 import io.ebean.DB;
 import io.ebean.Database;
 import org.junit.jupiter.api.*;
