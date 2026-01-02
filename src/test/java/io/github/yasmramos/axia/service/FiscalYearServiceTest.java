@@ -23,7 +23,7 @@ class FiscalYearServiceTest {
 
     @BeforeAll
     static void setUp() {
-        fiscalYearService = new FiscalYearService();
+        fiscalYearService = new FiscalYearService(new FiscalYearRepository());
     }
 
     @AfterAll
