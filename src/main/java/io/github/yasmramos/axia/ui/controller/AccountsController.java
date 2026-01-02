@@ -31,31 +31,77 @@ import java.util.ResourceBundle;
 
 /**
  * Controller for the Chart of Accounts view.
- * Manages account listing, creation, editing, and deletion.
- *
+ * 
+ * <p>Manages the user interface for viewing, creating, editing,
+ * and deleting accounts in the chart of accounts.
+ * 
+ * <p>Features:
+ * <ul>
+ *   <li>Table view of all accounts with filtering</li>
+ *   <li>Search by account code or name</li>
+ *   <li>Filter by account type (Asset, Liability, Equity, Income, Expense)</li>
+ *   <li>Create new accounts with hierarchical structure</li>
+ *   <li>Edit existing account details</li>
+ *   <li>Delete accounts (with validation for children and balance)</li>
+ *   <li>Export accounts to CSV</li>
+ *   <li>Summary statistics panel</li>
+ * </ul>
+ * 
+ * <p>FXML View: AccountsView.fxml
+ * 
  * @author Yasmany Ramos Garcia
+ * @version 1.0.0
+ * @see AccountService
+ * @see io.github.yasmramos.axia.model.Account
  */
 public class AccountsController implements Initializable {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsController.class);
     private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
 
+    /** Table displaying all accounts */
     @FXML private TableView<Account> accountsTable;
+    
+    /** Column showing account code */
     @FXML private TableColumn<Account, String> codeColumn;
+    
+    /** Column showing account name */
     @FXML private TableColumn<Account, String> nameColumn;
+    
+    /** Column showing account type */
     @FXML private TableColumn<Account, String> typeColumn;
+    
+    /** Column showing parent account */
     @FXML private TableColumn<Account, String> parentColumn;
+    
+    /** Column showing account balance */
     @FXML private TableColumn<Account, String> balanceColumn;
+    
+    /** Column showing active status */
     @FXML private TableColumn<Account, String> activeColumn;
+    
+    /** Column with action buttons (Edit, Delete) */
     @FXML private TableColumn<Account, Void> actionsColumn;
 
+    /** ComboBox for filtering by account type */
     @FXML private ComboBox<String> typeFilterCombo;
+    
+    /** TextField for searching accounts */
     @FXML private TextField searchField;
+    
+    /** CheckBox to show/hide inactive accounts */
     @FXML private CheckBox showInactiveCheck;
 
+    /** Label showing total account count */
     @FXML private Label totalAccountsLabel;
+    
+    /** Label showing total assets */
     @FXML private Label assetsTotalLabel;
+    
+    /** Label showing total liabilities */
     @FXML private Label liabilitiesTotalLabel;
+    
+    /** Label showing total equity */
     @FXML private Label equityTotalLabel;
 
     private final AccountService accountService;
@@ -63,11 +109,24 @@ public class AccountsController implements Initializable {
     private ObservableList<Account> allAccounts;
     private FilteredList<Account> filteredAccounts;
 
+    /**
+     * Constructs the AccountsController and initializes services.
+     * 
+     * <p>Uses Veld DI container to obtain AccountService instance.
+     */
     public AccountsController() {
         this.accountService = Veld.get(AccountService.class);
         this.exportService = new ExportService();
     }
 
+    /**
+     * Initializes the controller after FXML loading.
+     * 
+     * <p>Sets up table columns, filters, and loads initial data.
+     *
+     * @param location the location of the FXML file
+     * @param resources the resource bundle for localization
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         logger.info("Initializing AccountsController");
@@ -76,6 +135,12 @@ public class AccountsController implements Initializable {
         loadAccounts();
     }
 
+    /**
+     * Sets up table column cell value factories.
+     * 
+     * <p>Configures how each column displays data from Account objects,
+     * including formatting for currency values.
+     */
     private void setupTable() {
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -95,6 +160,9 @@ public class AccountsController implements Initializable {
         setupActionsColumn();
     }
 
+    /**
+     * Sets up the actions column with Edit and Delete buttons.
+     */
     private void setupActionsColumn() {
         actionsColumn.setCellFactory(col -> new TableCell<>() {
             private final Button editBtn = new Button("Edit");
@@ -115,6 +183,12 @@ public class AccountsController implements Initializable {
         });
     }
 
+    /**
+     * Sets up filter controls.
+     * 
+     * <p>Populates the type filter combo box with all account types
+     * and sets the default selection.
+     */
     private void setupFilters() {
         typeFilterCombo.getItems().add("All Types");
         for (AccountType type : AccountType.values()) {
@@ -123,6 +197,12 @@ public class AccountsController implements Initializable {
         typeFilterCombo.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Loads accounts from service and populates the table.
+     * 
+     * <p>Respects the showInactiveCheck to include or exclude
+     * inactive accounts from the list.
+     */
     private void loadAccounts() {
         List<Account> accounts = showInactiveCheck.isSelected() 
             ? accountService.findAll() 
@@ -136,6 +216,12 @@ public class AccountsController implements Initializable {
         logger.debug("Loaded {} accounts", accounts.size());
     }
 
+    /**
+     * Applies current filters to the accounts list.
+     * 
+     * <p>Called when filter combo box selection changes or
+     * search text is modified.
+     */
     @FXML
     public void applyFilter() {
         String typeFilter = typeFilterCombo.getValue();
@@ -153,6 +239,9 @@ public class AccountsController implements Initializable {
         updateSummary();
     }
 
+    /**
+     * Clears all filters and resets to defaults.
+     */
     @FXML
     public void clearFilters() {
         typeFilterCombo.getSelectionModel().selectFirst();
@@ -161,15 +250,31 @@ public class AccountsController implements Initializable {
         loadAccounts();
     }
 
+    /**
+     * Shows dialog for creating a new account.
+     */
     @FXML
     public void showNewAccountDialog() {
         showAccountDialog(null);
     }
 
+    /**
+     * Opens edit dialog for the specified account.
+     *
+     * @param account the account to edit, or null for new account
+     */
     private void editAccount(Account account) {
         showAccountDialog(account);
     }
 
+    /**
+     * Shows a dialog for creating or editing an account.
+     *
+     * <p>Displays a form with fields for code, name, type, parent,
+     * and active status. Validates input before saving.
+     *
+     * @param account the account to edit, or null for new account
+     */
     private void showAccountDialog(Account account) {
         Dialog<Account> dialog = new Dialog<>();
         dialog.setTitle(account == null ? "New Account" : "Edit Account");
@@ -236,6 +341,15 @@ public class AccountsController implements Initializable {
         }
     }
 
+    /**
+     * Deletes an account after confirmation.
+     * 
+     * <p>Shows a confirmation dialog and deletes the account
+     * if confirmed. The deletion may fail if the account has
+     * child accounts or a non-zero balance.
+     *
+     * @param account the account to delete
+     */
     private void deleteAccount(Account account) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Delete Account");
@@ -253,6 +367,12 @@ public class AccountsController implements Initializable {
         }
     }
 
+    /**
+     * Exports accounts to a CSV file.
+     * 
+     * <p>Opens a file chooser dialog and exports the currently
+     * filtered accounts to the selected file.
+     */
     @FXML
     public void exportToCsv() {
         FileChooser fileChooser = new FileChooser();
@@ -271,6 +391,9 @@ public class AccountsController implements Initializable {
         }
     }
 
+    /**
+     * Updates the summary statistics panel.
+     */
     private void updateSummary() {
         totalAccountsLabel.setText("Total Accounts: " + filteredAccounts.size());
         
@@ -283,6 +406,12 @@ public class AccountsController implements Initializable {
         equityTotalLabel.setText("Equity: " + CURRENCY_FORMAT.format(equity));
     }
 
+    /**
+     * Calculates the total balance for accounts of a specific type.
+     *
+     * @param type the account type to filter by
+     * @return the sum of balances for matching accounts
+     */
     private BigDecimal calculateTotalByType(AccountType type) {
         return filteredAccounts.stream()
             .filter(a -> a.getType() == type)
@@ -290,6 +419,12 @@ public class AccountsController implements Initializable {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    /**
+     * Shows an error alert to the user.
+     *
+     * @param title the alert title
+     * @param message the error message
+     */
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -297,6 +432,12 @@ public class AccountsController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Shows an information alert to the user.
+     *
+     * @param title the alert title
+     * @param message the information message
+     */
     private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
