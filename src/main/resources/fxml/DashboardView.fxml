@@ -42,11 +42,11 @@
             <Label text="Financial Summary" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
             <GridPane hgap="20" vgap="10">
                 <Label text="Accounts Receivable:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <Label fx:id="receivableLabel" text="$0.00" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+                <Label fx:id="receivableLabel" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
                 <Label text="Accounts Payable:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <Label fx:id="payableLabel" text="$0.00" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+                <Label fx:id="payableLabel" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
                 <Label text="Net Position:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                <Label fx:id="netPositionLabel" text="$0.00" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+                <Label fx:id="netPositionLabel" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
             </GridPane>
         </VBox>
 
