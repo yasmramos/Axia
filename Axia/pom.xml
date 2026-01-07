@@ -46,19 +46,19 @@
         <dependency>
             <groupId>io.github.yasmramos</groupId>
             <artifactId>veld-runtime</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.3</version>
         </dependency>
         <dependency>
             <groupId>io.github.yasmramos</groupId>
             <artifactId>veld-annotations</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.3</version>
         </dependency>
         
         <!-- Veld Processor for DI -->
         <dependency>
             <groupId>io.github.yasmramos</groupId>
             <artifactId>veld-processor</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.3</version>
             <scope>provided</scope>
         </dependency>
 
@@ -233,7 +233,7 @@
                         <path>
                             <groupId>io.github.yasmramos</groupId>
                             <artifactId>veld-processor</artifactId>
-                            <version>1.0.0</version>
+                            <version>1.0.3</version>
                         </path>
                     </annotationProcessorPaths>
                     <!-- Evitar regeneración -->
