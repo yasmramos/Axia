@@ -125,9 +125,16 @@ public class CurrencyService {
      * Sets a currency as the base currency.
      *
      * @param code the currency code to set as base
+     * @throws IllegalArgumentException if the currency is not found
      */
     public void setAsBaseCurrency(String code) {
         logger.info("Setting {} as base currency", code);
+
+        Optional<Currency> currency = findByCode(code);
+        if (currency.isEmpty()) {
+            logger.error("Currency not found with code: {}", code);
+            throw new IllegalArgumentException("Currency not found with code: " + code);
+        }
 
         // Remove base flag from current base
         getBaseCurrency().ifPresent(c -> {
@@ -137,11 +144,9 @@ public class CurrencyService {
         });
 
         // Set new base
-        findByCode(code).ifPresent(c -> {
-            c.setBaseCurrency(true);
-            c.setExchangeRate(BigDecimal.ONE);
-            DB.save(c);
-        });
+        currency.get().setBaseCurrency(true);
+        currency.get().setExchangeRate(BigDecimal.ONE);
+        DB.save(currency.get());
     }
 
     /**

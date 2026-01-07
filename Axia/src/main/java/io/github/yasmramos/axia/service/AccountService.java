@@ -43,6 +43,15 @@ public class AccountService {
             throw new IllegalArgumentException("Account already exists with code: " + code);
         }
 
+        // Validate parent exists if provided
+        if (parent != null) {
+            boolean parentExists = accountRepository.findById(parent.getId()).isPresent();
+            if (!parentExists) {
+                log.error("Parent account not found with ID: {}", parent.getId());
+                throw new IllegalArgumentException("Parent account not found with ID: " + parent.getId());
+            }
+        }
+
         Account account = new Account();
         account.setCode(code);
         account.setName(name);
