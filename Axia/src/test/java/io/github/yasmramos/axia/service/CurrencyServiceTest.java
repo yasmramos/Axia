@@ -169,4 +169,127 @@ class CurrencyServiceTest {
         assertTrue(saved.isPresent());
         assertEquals("Japanese Yen", saved.get().getName());
     }
+
+    @Test
+    @Order(10)
+    @DisplayName("Should find all currencies")
+    void testFindAll() {
+        List<Currency> all = currencyService.findAll();
+        
+        assertFalse(all.isEmpty());
+        assertTrue(all.size() >= 3);
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("Should return empty for non-existent code")
+    void testFindByCodeNotFound() {
+        Optional<Currency> result = currencyService.findByCode("XXX");
+        
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("Should convert between different currencies")
+    void testConvertDifferentCurrencies() {
+        BigDecimal amount = new BigDecimal("100");
+        // USD to EUR: 100 * (1/0.85) = 117.64 approx
+        BigDecimal result = currencyService.convert(amount, "USD", "EUR");
+        
+        assertTrue(result.compareTo(BigDecimal.ZERO) > 0);
+        assertEquals(0, new BigDecimal("117.65").compareTo(result.setScale(2, java.math.RoundingMode.HALF_UP)));
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("Should handle inactive currency conversion")
+    void testConvertInactiveCurrency() {
+        // GBP is inactive, should still work for conversion
+        BigDecimal amount = new BigDecimal("50");
+        BigDecimal result = currencyService.convert(amount, "USD", "GBP");
+        
+        assertTrue(result.compareTo(BigDecimal.ZERO) > 0);
+    }
+
+    @Test
+    @Order(14)
+    @DisplayName("Should deactivate currency")
+    void testDeactivate() {
+        Currency jpy = currencyService.findByCode("JPY").orElseThrow();
+        assertTrue(jpy.isActive());
+        
+        currencyService.deactivate("JPY");
+        
+        Optional<Currency> deactivated = currencyService.findByCode("JPY");
+        assertTrue(deactivated.isPresent());
+        assertFalse(deactivated.get().isActive());
+    }
+
+    @Test
+    @Order(15)
+    @DisplayName("Should not find inactive currencies in findAllActive")
+    void testInactiveNotInActiveList() {
+        List<Currency> active = currencyService.findAllActive();
+        
+        assertFalse(active.stream().anyMatch(c -> "GBP".equals(c.getCode())));
+    }
+
+    @Test
+    @Order(16)
+    @DisplayName("Should return currencies by symbol")
+    void testFindBySymbol() {
+        Optional<Currency> usd = currencyService.findBySymbol("$");
+        
+        assertTrue(usd.isPresent());
+        assertEquals("USD", usd.get().getCode());
+    }
+
+    @Test
+    @Order(17)
+    @DisplayName("Should handle null exchange rate gracefully")
+    void testNullExchangeRate() {
+        Currency mxn = new Currency();
+        mxn.setCode("MXN");
+        mxn.setName("Mexican Peso");
+        mxn.setSymbol("$");
+        mxn.setExchangeRate(null);
+        mxn.setBaseCurrency(false);
+        mxn.setActive(true);
+        
+        currencyService.save(mxn);
+        
+        Optional<Currency> saved = currencyService.findByCode("MXN");
+        assertTrue(saved.isPresent());
+        assertNull(saved.get().getExchangeRate());
+    }
+
+    @Test
+    @Order(18)
+    @DisplayName("Should calculate exchange rate between two non-base currencies")
+    void testExchangeRateBetweenNonBase() {
+        BigDecimal rate = currencyService.getExchangeRate("EUR", "GBP");
+        
+        assertTrue(rate.compareTo(BigDecimal.ZERO) > 0);
+        // EUR to GBP: 0.85 / 0.73 ≈ 1.16
+        assertEquals(0, new BigDecimal("1.16").compareTo(rate.setScale(2, java.math.RoundingMode.HALF_UP)));
+    }
+
+    @Test
+    @Order(19)
+    @DisplayName("Should get all currencies including inactive")
+    void testFindAllIncludesInactive() {
+        List<Currency> all = currencyService.findAll();
+        
+        assertTrue(all.stream().anyMatch(c -> "GBP".equals(c.getCode())));
+    }
+
+    @Test
+    @Order(20)
+    @DisplayName("Should throw exception when setting non-existent as base")
+    void testSetNonExistentAsBase() {
+        assertThrows(IllegalArgumentException.class, () ->
+            currencyService.setAsBaseCurrency("XYZ")
+        );
+    }
 }

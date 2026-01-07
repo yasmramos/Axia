@@ -137,4 +137,25 @@ public class AccountRepository {
                 .orderBy("code")
                 .findList();
     }
+
+    /**
+     * Finds all child accounts by parent ID.
+     * @param parentId the parent account ID
+     * @return list of child accounts
+     */
+    public List<Account> findChildren(Long parentId) {
+        return db.find(Account.class)
+                .where()
+                .eq("parent.id", parentId)
+                .orderBy("code")
+                .findList();
+    }
+
+    /**
+     * Counts all accounts.
+     * @return the total number of accounts
+     */
+    public long count() {
+        return db.find(Account.class).findCount();
+    }
 }

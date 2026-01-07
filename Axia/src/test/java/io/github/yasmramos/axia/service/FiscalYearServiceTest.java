@@ -146,4 +146,154 @@ class FiscalYearServiceTest {
         
         assertTrue(fiscalYearService.findByYear(currentYear).isPresent());
     }
+
+    @Test
+    @Order(10)
+    @DisplayName("Should find fiscal year by ID")
+    void testFindById() {
+        FiscalYear fiscalYear = fiscalYearService.findByYear(2024).orElseThrow();
+        var found = fiscalYearService.findById(fiscalYear.getId());
+        
+        assertTrue(found.isPresent());
+        assertEquals(2024, found.get().getYear());
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("Should return empty when ID not found")
+    void testFindByIdNotFound() {
+        var result = fiscalYearService.findById(999999L);
+        
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("Should find by year not found")
+    void testFindByYearNotFound() {
+        var result = fiscalYearService.findByYear(2099);
+        
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("Should re-open closed fiscal year")
+    void testReopenFiscalYear() {
+        FiscalYear fiscalYear = fiscalYearService.findByYear(2024).orElseThrow();
+        assertTrue(fiscalYear.isClosed());
+        
+        fiscalYearService.reopen(fiscalYear.getId());
+        
+        FiscalYear reopened = fiscalYearService.findById(fiscalYear.getId()).orElseThrow();
+        assertFalse(reopened.isClosed());
+    }
+
+    @Test
+    @Order(14)
+    @DisplayName("Should not reopen open year")
+    void testReopenOpenYearThrowsException() {
+        FiscalYear fiscalYear = fiscalYearService.findByYear(2025).orElseThrow();
+        assertFalse(fiscalYear.isClosed());
+        
+        assertThrows(IllegalStateException.class, () ->
+            fiscalYearService.reopen(fiscalYear.getId())
+        );
+    }
+
+    @Test
+    @Order(15)
+    @DisplayName("Should get date range for fiscal year")
+    void testGetDateRange() {
+        FiscalYear fiscalYear = fiscalYearService.findByYear(2024).orElseThrow();
+        
+        LocalDate startDate = fiscalYearService.getStartDate(fiscalYear.getId());
+        LocalDate endDate = fiscalYearService.getEndDate(fiscalYear.getId());
+        
+        assertNotNull(startDate);
+        assertNotNull(endDate);
+        assertTrue(startDate.isBefore(endDate));
+    }
+
+    @Test
+    @Order(16)
+    @DisplayName("Should check if date is within fiscal year")
+    void testIsDateWithin() {
+        FiscalYear fiscalYear = fiscalYearService.findByYear(2024).orElseThrow();
+        
+        LocalDate dateWithin = LocalDate.of(2024, 6, 15);
+        LocalDate dateOutside = LocalDate.of(2023, 6, 15);
+        
+        assertTrue(fiscalYearService.isDateWithin(fiscalYear.getId(), dateWithin));
+        assertFalse(fiscalYearService.isDateWithin(fiscalYear.getId(), dateOutside));
+    }
+
+    @Test
+    @Order(17)
+    @DisplayName("Should find fiscal years by status")
+    void testFindByStatus() {
+        // Find open years
+        List<FiscalYear> openYears = fiscalYearService.findByStatus(false);
+        assertTrue(openYears.stream().noneMatch(FiscalYear::isClosed));
+        
+        // Find closed years
+        List<FiscalYear> closedYears = fiscalYearService.findByStatus(true);
+        assertTrue(closedYears.stream().allMatch(FiscalYear::isClosed));
+    }
+
+    @Test
+    @Order(18)
+    @DisplayName("Should count fiscal years")
+    void testCount() {
+        long count = fiscalYearService.count();
+        
+        assertTrue(count >= 2);
+    }
+
+    @Test
+    @Order(19)
+    @DisplayName("Should delete fiscal year with no transactions")
+    void testDelete() {
+        FiscalYear fiscalYear = fiscalYearService.create(
+                2099,
+                LocalDate.of(2099, 1, 1),
+                LocalDate.of(2099, 12, 31)
+        );
+        Long id = fiscalYear.getId();
+        
+        fiscalYearService.delete(id);
+        
+        assertFalse(fiscalYearService.findById(id).isPresent());
+    }
+
+    @Test
+    @Order(20)
+    @DisplayName("Should throw exception when deleting non-existent year")
+    void testDeleteNonExistent() {
+        assertThrows(IllegalArgumentException.class, () ->
+            fiscalYearService.delete(999999L)
+        );
+    }
+
+    @Test
+    @Order(21)
+    @DisplayName("Should update fiscal year")
+    void testUpdate() {
+        FiscalYear fiscalYear = fiscalYearService.findByYear(2025).orElseThrow();
+        fiscalYear.setDescription("Updated Description");
+        
+        fiscalYearService.update(fiscalYear);
+        
+        FiscalYear updated = fiscalYearService.findById(fiscalYear.getId()).orElseThrow();
+        assertEquals("Updated Description", updated.getDescription());
+    }
+
+    @Test
+    @Order(22)
+    @DisplayName("Should find current or most recent fiscal year")
+    void testFindCurrentOrMostRecent() {
+        var result = fiscalYearService.findCurrentOrMostRecent();
+        
+        assertTrue(result.isPresent());
+    }
 }

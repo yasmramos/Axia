@@ -116,6 +116,11 @@ public class AccountService {
         return accountRepository.findRootAccounts();
     }
 
+    public List<Account> findRoots() {
+        log.debug("Retrieving root accounts");
+        return accountRepository.findRootAccounts();
+    }
+
     public List<Account> getChartOfAccounts() {
         log.debug("Retrieving chart of accounts");
         return accountRepository.findAll();
@@ -160,5 +165,36 @@ public class AccountService {
         create("5.1.02", "Administrative Expenses", AccountType.EXPENSE, findByCode("5.1").orElse(null));
 
         log.info("Default chart of accounts initialized successfully");
+    }
+
+    public List<Account> findChildren(Long parentId) {
+        log.debug("Finding children accounts for parent ID: {}", parentId);
+        return accountRepository.findChildren(parentId);
+    }
+
+    public void deactivate(Long id) {
+        log.info("Deactivating account with ID: {}", id);
+        
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Account not found with ID: {}", id);
+                    return new IllegalArgumentException("Account not found");
+                });
+        
+        account.setActive(false);
+        accountRepository.update(account);
+        log.debug("Account deactivated: {}", account.getCode());
+    }
+
+    public List<Account> searchByName(String name) {
+        log.debug("Searching accounts by name: {}", name);
+        return accountRepository.findAll().stream()
+                .filter(a -> a.getName().toLowerCase().contains(name.toLowerCase()))
+                .toList();
+    }
+
+    public long count() {
+        log.debug("Counting all accounts");
+        return accountRepository.count();
     }
 }

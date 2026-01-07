@@ -37,6 +37,9 @@ public class FiscalYear extends BaseModel {
     @Column(nullable = false)
     private boolean current = false;
 
+    /** Optional description for the fiscal year */
+    private String description;
+
     // ==================== Getters and Setters ====================
 
     /** @return the year number */
@@ -87,5 +90,15 @@ public class FiscalYear extends BaseModel {
     /** @param current the current status */
     public void setCurrent(boolean current) {
         this.current = current;
+    }
+
+    /** @return the description */
+    public String getDescription() {
+        return description;
+    }
+
+    /** @param description the description */
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

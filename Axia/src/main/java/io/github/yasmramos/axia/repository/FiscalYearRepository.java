@@ -65,4 +65,12 @@ public class FiscalYearRepository {
                 .orderBy("year desc")
                 .findList();
     }
+
+    public long count() {
+        return db.find(FiscalYear.class).findCount();
+    }
+
+    public void delete(FiscalYear fiscalYear) {
+        db.delete(fiscalYear);
+    }
 }

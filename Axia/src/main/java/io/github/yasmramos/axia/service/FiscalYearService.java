@@ -209,4 +209,128 @@ public class FiscalYearService {
             log.debug("Fiscal year {} already exists", currentYear);
         }
     }
+
+    /**
+     * Re-opens a closed fiscal year.
+     *
+     * @param id the fiscal year ID
+     * @return the reopened fiscal year
+     * @throws IllegalArgumentException if the fiscal year is not found
+     * @throws IllegalStateException if the fiscal year is not closed
+     */
+    public FiscalYear reopen(Long id) {
+        log.info("Re-opening fiscal year: {}", id);
+
+        FiscalYear fiscalYear = fiscalYearRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Año fiscal no encontrado"));
+
+        if (!fiscalYear.isClosed()) {
+            throw new IllegalStateException("El año fiscal no está cerrado");
+        }
+
+        fiscalYear.setClosed(false);
+        fiscalYearRepository.update(fiscalYear);
+
+        log.info("Fiscal year {} re-opened successfully", fiscalYear.getYear());
+        return fiscalYear;
+    }
+
+    /**
+     * Gets the start date of a fiscal year.
+     *
+     * @param id the fiscal year ID
+     * @return the start date
+     * @throws IllegalArgumentException if the fiscal year is not found
+     */
+    public LocalDate getStartDate(Long id) {
+        FiscalYear fiscalYear = fiscalYearRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Año fiscal no encontrado"));
+        return fiscalYear.getStartDate();
+    }
+
+    /**
+     * Gets the end date of a fiscal year.
+     *
+     * @param id the fiscal year ID
+     * @return the end date
+     * @throws IllegalArgumentException if the fiscal year is not found
+     */
+    public LocalDate getEndDate(Long id) {
+        FiscalYear fiscalYear = fiscalYearRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Año fiscal no encontrado"));
+        return fiscalYear.getEndDate();
+    }
+
+    /**
+     * Checks if a date is within a fiscal year.
+     *
+     * @param id the fiscal year ID
+     * @param date the date to check
+     * @return true if the date is within the fiscal year
+     */
+    public boolean isDateWithin(Long id, LocalDate date) {
+        FiscalYear fiscalYear = fiscalYearRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Año fiscal no encontrado"));
+        return !date.isBefore(fiscalYear.getStartDate()) && !date.isAfter(fiscalYear.getEndDate());
+    }
+
+    /**
+     * Finds fiscal years by closed status.
+     *
+     * @param closed true to find closed years, false for open years
+     * @return list of fiscal years matching the status
+     */
+    public List<FiscalYear> findByStatus(boolean closed) {
+        return fiscalYearRepository.findAll().stream()
+                .filter(fy -> fy.isClosed() == closed)
+                .toList();
+    }
+
+    /**
+     * Counts all fiscal years.
+     *
+     * @return the total number of fiscal years
+     */
+    public long count() {
+        return fiscalYearRepository.count();
+    }
+
+    /**
+     * Deletes a fiscal year.
+     *
+     * @param id the fiscal year ID
+     * @throws IllegalArgumentException if the fiscal year is not found
+     */
+    public void delete(Long id) {
+        log.info("Deleting fiscal year: {}", id);
+
+        FiscalYear fiscalYear = fiscalYearRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Año fiscal no encontrado"));
+
+        fiscalYearRepository.delete(fiscalYear);
+        log.info("Fiscal year {} deleted successfully", fiscalYear.getYear());
+    }
+
+    /**
+     * Updates a fiscal year.
+     *
+     * @param fiscalYear the fiscal year to update
+     * @return the updated fiscal year
+     */
+    public FiscalYear update(FiscalYear fiscalYear) {
+        log.info("Updating fiscal year: {}", fiscalYear.getYear());
+        fiscalYearRepository.update(fiscalYear);
+        return fiscalYear;
+    }
+
+    /**
+     * Finds the current fiscal year, or the most recent one if none is current.
+     *
+     * @return the current or most recent fiscal year
+     */
+    public Optional<FiscalYear> findCurrentOrMostRecent() {
+        return fiscalYearRepository.findCurrent()
+                .or(() -> fiscalYearRepository.findAll().stream()
+                        .max((a, b) -> a.getYear().compareTo(b.getYear())));
+    }
 }

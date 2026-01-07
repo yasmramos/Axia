@@ -143,4 +143,78 @@ public class CurrencyService {
             DB.save(c);
         });
     }
+
+    /**
+     * Finds all currencies (active and inactive).
+     *
+     * @return list of all currencies
+     */
+    public List<Currency> findAll() {
+        logger.debug("Finding all currencies");
+        return DB.find(Currency.class)
+                .orderBy()
+                .asc("code")
+                .findList();
+    }
+
+    /**
+     * Deactivates a currency by its code.
+     *
+     * @param code the currency code to deactivate
+     * @return true if deactivated successfully
+     */
+    public boolean deactivate(String code) {
+        logger.info("Deactivating currency: {}", code);
+        Optional<Currency> currency = findByCode(code);
+        if (currency.isPresent()) {
+            currency.get().setActive(false);
+            DB.save(currency.get());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Finds a currency by its symbol.
+     *
+     * @param symbol the currency symbol (e.g., $, €, £)
+     * @return optional containing the currency if found
+     */
+    public Optional<Currency> findBySymbol(String symbol) {
+        logger.debug("Finding currency by symbol: {}", symbol);
+        return Optional.ofNullable(
+                DB.find(Currency.class)
+                        .where()
+                        .eq("symbol", symbol)
+                        .findOne()
+        );
+    }
+
+    /**
+     * Gets the exchange rate for a currency.
+     *
+     * @param code the currency code
+     * @return optional containing the exchange rate
+     */
+    public Optional<BigDecimal> getExchangeRate(String code) {
+        logger.debug("Getting exchange rate for: {}", code);
+        return findByCode(code)
+                .map(Currency::getExchangeRate);
+    }
+
+    /**
+     * Gets the exchange rate between two currencies.
+     *
+     * @param fromCode source currency code
+     * @param toCode target currency code
+     * @return the exchange rate from source to target
+     */
+    public BigDecimal getExchangeRate(String fromCode, String toCode) {
+        logger.debug("Getting exchange rate from {} to {}", fromCode, toCode);
+        BigDecimal fromRate = getExchangeRate(fromCode)
+                .orElseThrow(() -> new IllegalArgumentException("Currency not found: " + fromCode));
+        BigDecimal toRate = getExchangeRate(toCode)
+                .orElseThrow(() -> new IllegalArgumentException("Currency not found: " + toCode));
+        return fromRate.divide(toRate, 4, java.math.RoundingMode.HALF_UP);
+    }
 }
